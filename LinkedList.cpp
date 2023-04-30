@@ -23,19 +23,22 @@ unsigned int LinkedList::getListLength(){
 }
 
 unsigned int LinkedList::getStockLevels(std::string id){
-
+    return 1;
 }
 
 std::string LinkedList::getName(std::string id){
-
+    return "name";
 }
 
 std::string LinkedList::getDescription(std::string id){
-
+    return "description";
 }
 
 Price LinkedList::getPrice(std::string id){
-
+    Price price;
+    price.dollars = 0;
+    price.cents = 0;
+    return price;
 }
 
 void LinkedList::restock(){

@@ -1,6 +1,7 @@
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 #include "Node.h"
+#include <vector>
 
 
 class LinkedList
@@ -30,6 +31,7 @@ private:
   
     // how many nodes are there in the list?
     unsigned listLength;
+    std::vector<std::string> idList;
 };
 
 #endif  // LINKEDLIST_H
