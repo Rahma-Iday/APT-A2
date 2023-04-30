@@ -22,6 +22,15 @@
 //The number of denominations of currency available in the system 
 #define NUM_DENOMS 8
 
+// Stock delimiter
+#define STOCK_DELIM '|'
+
+// Price delimeter
+#define PRICE_DELIM '.'
+
+#define CENTLEN 2
+
+
 /**
  * a structure to represent a price. One of the problems with the floating
  * point formats in C++ like float and double is that they have minor issues
@@ -41,10 +50,6 @@ public:
 class Stock
 {
 public:
-
-    Stock(std::string id, std::string name, std::string description, Price price, unsigned on_hand)
-        : id(id), name(name), description(description), price(price), on_hand(on_hand) {}
-
     //the unique id for this item
     std::string id;
 
@@ -68,13 +73,11 @@ class Node
 {
 public:
     Node();
-    Node(Stock temp);
     ~Node();
     // pointer to the data held for the node 
     Stock* data;
     // pointer to the next node in the list 
     Node* next;
-    Node* back;
 };
 
 #endif // NODE_H
