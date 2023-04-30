@@ -4,6 +4,7 @@
 #include <sstream>
 #include <set>
 #include <iomanip>
+#include <algorithm>
 using std::string;
 using std::vector;
 
@@ -193,8 +194,12 @@ vector<Stock> loadStockData(string fileName, char delim){
         stocks.push_back(stock);  
     }
 
-    // TODO: sort vector alphaetically by name 
-
+    //sorts vector alphaetically by name, using lambda function
+    std::sort(stocks.begin(), stocks.end(), [](const Stock& a, const Stock& b) {
+        //compares the strings lexicographically aka alphabetically
+        return a.name < b.name;
+    });
+    
     return stocks;
 }
 
