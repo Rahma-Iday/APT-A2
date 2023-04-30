@@ -32,7 +32,6 @@ int main(int argc, char **argv)
             }
         } 
 
-
     } else {
         std::cout << "Please make sure exactly 3 command line arguments are entered in the form:\n ./ppd <stockfile> <coinsfile>" << std::endl;
     }
@@ -199,12 +198,31 @@ vector<Stock> loadStockData(string fileName, char delim){
         //compares the strings lexicographically aka alphabetically
         return a.name < b.name;
     });
-    
+
     return stocks;
 }
 
 vector<Coin> loadCoinData(string fileName, char delim){
+    vector<Coin> coins;
+    std::ifstream file(fileName);
+    std::string line;
 
+    for (int i = 0; i < NUM_DENOMS; i++) {
+        std::stringstream linestream(line);
+        std::string denomString, countString;
+
+        Coin coin;
+
+        std::getline(linestream, denomString, delim);
+        std::getline(linestream, countString);
+        
+        coin.denom = static_cast<Denomination>(i);
+        coin.count = std::stoul(countString);
+
+        coins.push_back(coin);
+    }
+
+    return coins;
 }
 
 
