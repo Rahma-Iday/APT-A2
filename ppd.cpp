@@ -10,8 +10,13 @@ int main(int argc, char **argv)
 {
     /* validate command line arguments */
     // TODO
-
-    std::cout << "Just a test, nothing implemented yet!" << std::endl;
+    if (argc==3){
+        std::string stockFile(argv[1]);
+        std::string coinFile(argv[2]);
+        
+    } else {
+        std::cout << "Please make sure exactly 3 command line arguments are entered in the form:\n ./ppd <stockfile> <coinsfile>" << std::endl;
+    }
     
     return EXIT_SUCCESS;
 }
