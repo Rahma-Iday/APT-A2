@@ -8,6 +8,12 @@
 using std::string;
 using std::vector;
 
+bool checkFilesExist(string stockFile, string coinFile);
+bool readStockData(string fileName, char delim);
+bool readCoinData(string fileName, char delim);
+vector<Stock> loadStockData(string fileName, char delim);
+vector<Coin> loadCoinData(string fileName, char delim);
+
 
 /**
  * manages the running of the program, initialises data structures, loads
@@ -26,7 +32,7 @@ int main(int argc, char **argv)
         // check if both files exists, only then read data 
         if (checkFilesExist(stockFile,coinFile)){
             // check if data in both Files are valid, then only loads data 
-            if( readStockFile(stockFile, STOCK_DELIM) && readCoinData(coinFile, DELIM[0])){
+            if( readStockData(stockFile, STOCK_DELIM) && readCoinData(coinFile, DELIM[0])){
                 vector<Stock> stock = loadStockData(stockFile, STOCK_DELIM);
                 vector<Coin> coins = loadCoinData(coinFile,DELIM[0]);
             }
@@ -39,7 +45,7 @@ int main(int argc, char **argv)
     return EXIT_SUCCESS;
 }
 
-bool readStockFile(string fileName, char delim){
+bool readStockData(string fileName, char delim){
     bool validData = true;
 
     std::ifstream file(fileName);
