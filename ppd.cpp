@@ -212,8 +212,9 @@ vector<Coin> loadCoinData(string fileName, char delim){
     vector<Coin> coins;
     std::ifstream file(fileName);
     std::string line;
+    int enum_count = 0;
 
-    for (int i = 0; i < NUM_DENOMS; i++) {
+    while (std::getline(file, line)) {
         std::stringstream linestream(line);
         std::string denomString, countString;
 
@@ -222,7 +223,8 @@ vector<Coin> loadCoinData(string fileName, char delim){
         std::getline(linestream, denomString, delim);
         std::getline(linestream, countString);
         
-        coin.denom = static_cast<Denomination>(i);
+        coin.denom = static_cast<Denomination>(enum_count);
+        enum_count++;
         coin.count = std::stoul(countString);
 
         coins.push_back(coin);
