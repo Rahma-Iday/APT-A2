@@ -41,6 +41,10 @@ public:
 class Stock
 {
 public:
+
+    Stock(std::string id, std::string name, std::string description, Price price, unsigned on_hand)
+        : id(id), name(name), description(description), price(price), on_hand(on_hand) {}
+
     //the unique id for this item
     std::string id;
 
@@ -64,11 +68,13 @@ class Node
 {
 public:
     Node();
+    Node(Stock temp);
     ~Node();
     // pointer to the data held for the node 
     Stock* data;
     // pointer to the next node in the list 
     Node* next;
+    Node* back;
 };
 
 #endif // NODE_H
