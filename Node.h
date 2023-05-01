@@ -50,11 +50,6 @@ public:
 class Stock
 {
 public:
-    // default constructor
-    Stock();
-
-    Stock(std::string id, std::string name, std::string description, Price price, unsigned on_hand)
-    : id(id), name(name), description(description), price(price), on_hand(on_hand) {}
 
     //the unique id for this item
     std::string id;
