@@ -24,4 +24,5 @@ All Tasks:
         - stock.dat when price(cents) is string 
         - stock.dat when on_hand is string 
         - ^ when int but -ive 
-        - stock.dat when price(cents) is something like .36 or .01 (aka not accomodating coin system)    
+        - stock.dat when price(cents) is something like .36 or .01 (aka not accomodating coin system)
+        - test that cents prints as 3.00 instead of 3.0 and 3.05 not 3.5
