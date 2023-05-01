@@ -56,9 +56,8 @@ bool readStockData(string fileName, char delim){
     while (std::getline(file, line)) {
         std::stringstream linestream(line);
         std::string id, name, description, dollarsString, centsString, on_handString;
-        unsigned int dollars;
+        
         unsigned int cents;
-        unsigned int on_hand;
 
         // checks all feilds are there, if all there then checks if string feilds are actually unsigned ints
         if(
@@ -71,9 +70,14 @@ bool readStockData(string fileName, char delim){
         ){
             // checks that all strings for dollars, cents and stock on hand strings are all unsigned ints 
             try {
-                dollars = std::stoul(dollarsString);
-                on_hand = std::stoul(on_handString);
+                std::stoul(dollarsString);
+                std::stoul(on_handString);
                 cents = std::stoul(centsString);
+                // additonally also checks that cents is divisible by 5 EVENLY
+                if (cents % 5 != 0) {
+                    std::cout << "Invalid Price Data in Stock File: Cents Must be Valid" << std::endl;
+                    validData = false;
+                }
             } catch (const std::invalid_argument& e) {
                 std::cerr << "Error: invalid argument: " << e.what() << std::endl;
                 //std::cout << "Invalid Data in Stock File" << std::endl;
@@ -83,11 +87,7 @@ bool readStockData(string fileName, char delim){
                 //std::cout << "Invalid Data in Stock File" << std::endl;
                 validData = false;
             } 
-            // additonally also checks that cents is divisible by 5 EVENLY
-            if (cents % 5 != 0) {
-                std::cout << "Invalid Price Data in Stock File: Cents Must be Valid" << std::endl;
-                validData = false;
-            }
+            
             // checks all ids are unique:
             if(idSet.insert(id).second == false){
                 std::cout << "Invalid Data in Stock File, Multiple Entries with the Same ID" << std::endl;
@@ -122,7 +122,6 @@ bool readCoinData(string fileName, char delim){
         std::stringstream linestream(line);
         std::string denominationString, quantityString;
         unsigned int denomination;
-        unsigned int quantity;
 
         // checks all feilds are there, if all there then checks if string feilds are actually unsigned ints
         if(
@@ -132,7 +131,13 @@ bool readCoinData(string fileName, char delim){
             // checks that strings are all unsigned ints 
             try {
                 denomination = std::stoul(denominationString);
-                quantity = std::stoul(quantityString);
+                std::stoul(quantityString);
+
+                // checks if duplicate value is being inserted 
+                if (denomSet.insert(denomination).second == false) {
+                    std::cout << "Invalid Data in Coin File" << std::endl;
+                }
+
             } catch (const std::invalid_argument& e) {
                 std::cerr << "Error: invalid argument: " << e.what() << std::endl;
                 //std::cout << "Invalid Data in Stock File" << std::endl;
@@ -143,10 +148,7 @@ bool readCoinData(string fileName, char delim){
                 validData = false;
             } 
 
-            // checks if duplicate value is being inserted 
-            if (denomSet.insert(denomination).second == false) {
-                std::cout << "Invalid Data in Coin File" << std::endl;
-            }
+            
 
         } else {
             // invalid number of feilds
