@@ -76,9 +76,9 @@ void handleInput(LinkedList &list){
     // create a loop that executes the return to main menu functionality until exit options (3 or 9) are pressed
     // set a bool value to ensure main menu is displayed until valid input given
     bool exitProgram = false;
-    displayMenu();
     while (!exitProgram)
     {
+        displayMenu();
         bool validOption = false;
         int optionNo = 0;
         while(!validOption)
@@ -117,10 +117,11 @@ void handleInput(LinkedList &list){
 
 void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo){
     if (optionNo == 1){
-    // Display items 
-    list.print();
-    // no exiting program, thus re-displays main menu
+        // Display items 
+        list.print();
+        // no exiting program, thus re-displays main menu
     } else if (optionNo == 2){// Purchase Item
+        
     
     } else if (optionNo == 3){// Save and Exit
         exitProgram = true; // only if method returns true tho
@@ -212,6 +213,12 @@ bool readStockData(string fileName, char delim)
                 std::cout << "Invalid Price Data in Stock File: Cents Must be specified to Exactly 2 Decimal Places" << std::endl;
                 validData = false;
             }
+            // checks that ID len , name len and Description len are the correct size:
+            if ( static_cast<int>(id.size()) != IDLEN || static_cast<int>(name.length()) > NAMELEN || static_cast<int>(description.length()) > DESCLEN){
+                std::cout << "Invalid Price Data in Stock File: Check ID, name and description feilds are the correct size" << std::endl;
+                validData = false;
+            }
+
         }
         else
         {
