@@ -37,6 +37,13 @@ int main(int argc, char **argv)
             {
                 vector<Stock> stock = loadStockData(stockFile, STOCK_DELIM);
                 vector<Coin> coins = loadCoinData(coinFile, DELIM[0]);
+
+
+                LinkedList list;
+                for(int i = 0;  i < stock.size(); i++){
+                    list.add(stock[i]);
+                }
+
             }
         }
     }
