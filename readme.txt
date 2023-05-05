@@ -5,10 +5,10 @@ All Tasks:
     REQ3: Display main menu (vic)
     REQ4: Display items (sarvesh)
     REQ5: Purchase items (vic) 
-    REQ6: Save and exit (krishna) 
-    REQ7: Add item (sarvesh)
-    REQ8: Remove items(sarvesh)
-    REQ9: Reset stock levels(sarvesh)
+    REQ6: Save and exit : 1/2 DONE
+    REQ7: Add item : DONE (sarvesh)
+    REQ8: Remove items: DONE (sarvesh)
+    REQ9: Reset stock levels : DONE (sarvesh)
     REQ10: Reset coin count
     REQ11: Display coins
     REQ12: "Abort"
