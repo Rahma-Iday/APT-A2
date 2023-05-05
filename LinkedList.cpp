@@ -8,12 +8,19 @@ LinkedList::LinkedList() {
 }
 
 void LinkedList::add(Stock info){
+    Node prev = nullptr;
     Node* newNode = new Node(info);
+
+
     if(head == nullptr){
+        head = newNode;
+    }else if(head->data->name > newNode->data->name){
+        newNode->next = head;
         head = newNode;
     }else{
         Node* temp = head;
         while(temp->next != nullptr){
+            prev = temp;
             temp = temp->next;
         }
         temp->next = newNode;
@@ -114,20 +121,13 @@ Price LinkedList::getPrice(std::string id){
     price.dollars = 0;
     price.cents = 0;
 
-    for(int i=0; i < idList.size(); i++){
-        if(idList[i] == id){
-            Node* temp = head;
-            while(temp != nullptr){
-                if(temp->data->id == id){
-                    price.dollars = temp->data->price.dollars;
-                    price.cents = temp->data->price.cents;
-                }
-                temp = temp->next;
-            }
-        }else{
-            price.dollars = 0;
-            price.cents = 0;
+    Node* temp = head;
+    while(temp != nullptr){
+        if(temp->data->id == id){
+            price.dollars = temp->data->price.dollars;
+            price.cents = temp->data->price.cents;
         }
+        temp = temp->next;
     }
 
     return price;

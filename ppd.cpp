@@ -86,7 +86,8 @@ int main(int argc, char **argv)
                     
                     if (optionNo == 1){
                         // Display items 
-                        // list.print();
+                        list.print();
+                        std::cout << std::endl;
                         // no exiting program, thus re-displays main menu
                     } else if (optionNo == 2){
                         // Purchase Item
