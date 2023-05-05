@@ -23,9 +23,10 @@ void printInvalidInput();
 Stock getNewItem(LinkedList &list);
 void getPrice(unsigned int& x, unsigned int& y);
 void printDebug();
-void handleInput(LinkedList &list);
-void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo);
+void handleInput(LinkedList &list, string stockFile, string coinFile);
+void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile);
 void removeItem(LinkedList &list);
+void saveAndExit(LinkedList &list, string stockFile, string coinFile);
 
 
 
@@ -60,7 +61,7 @@ int main(int argc, char **argv)
                 }
                 /*load coin into array data type?*/
                 
-                handleInput(list);
+                handleInput(list, stockFile, coinFile);
             }
         }
     }
@@ -71,14 +72,15 @@ int main(int argc, char **argv)
 }
 
 
-void handleInput(LinkedList &list){
+void handleInput(LinkedList &list, string stockFile, string coinFile){
 
     // create a loop that executes the return to main menu functionality until exit options (3 or 9) are pressed
     // set a bool value to ensure main menu is displayed until valid input given
     bool exitProgram = false;
+    displayMenu();
+
     while (!exitProgram)
     {
-        displayMenu();
         bool validOption = false;
         int optionNo = 0;
         while(!validOption)
@@ -109,13 +111,13 @@ void handleInput(LinkedList &list){
             }
         }
         std::cout << std::endl;
-        handleOptions(list, exitProgram, optionNo);
+        handleOptions(list, exitProgram, optionNo, stockFile, coinFile);
         std::cout << std::endl;
     }
 }
 
 
-void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo){
+void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile){
     if (optionNo == 1){
         // Display items 
         list.print();
@@ -124,6 +126,7 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo){
         
     
     } else if (optionNo == 3){// Save and Exit
+        saveAndExit(list, stockFile, coinFile);
         exitProgram = true; // only if method returns true tho
     
     } else if (optionNo == 4){// Add item
@@ -148,7 +151,27 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo){
 }
 
 
+void saveAndExit(LinkedList &list, string stockFile, string coinFile)
+{
+    std::ofstream outputStockFile(stockFile, std::ofstream::out);
 
+    if (outputStockFile.is_open()) {
+        std::vector<std::string> idList = list.idList;
+        for (const std::string& id : idList) {
+            outputStockFile << id << STOCK_DELIM;
+            outputStockFile << list.getName(id) << STOCK_DELIM;
+            outputStockFile << list.getDescription(id) << STOCK_DELIM;
+            outputStockFile << list.getPrice(id).dollars << PRICE_DELIM;
+            outputStockFile << std::setfill('0') << std::setw(2)<< list.getPrice(id).cents << STOCK_DELIM;
+            outputStockFile << list.getStockLevels(id) << "\n";
+        }
+        
+        outputStockFile.close();
+        std::cout << "Stock File saved successfully." << std::endl;
+    } else {
+        std::cout << "Error opening file." << std::endl;
+    }
+}
 
 bool readStockData(string fileName, char delim)
 {
