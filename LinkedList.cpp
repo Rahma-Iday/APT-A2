@@ -8,7 +8,6 @@ LinkedList::LinkedList() {
 }
 
 void LinkedList::add(Stock info){
-    Node prev = nullptr;
     Node* newNode = new Node(info);
 
 
@@ -18,12 +17,23 @@ void LinkedList::add(Stock info){
         newNode->next = head;
         head = newNode;
     }else{
-        Node* temp = head;
-        while(temp->next != nullptr){
-            prev = temp;
-            temp = temp->next;
+        Node* currNode = head;
+        Node* nextNode = head->next;
+        bool inserted = false;
+        while(nextNode != nullptr && !inserted){
+            if(nextNode->data->name > newNode->data->name){
+                currNode->next = newNode;
+                newNode->next = nextNode;
+                inserted = true;
+            }else{
+                currNode = currNode->next; 
+                nextNode = nextNode->next;
+            }
         }
-        temp->next = newNode;
+        if(!inserted){
+            currNode->next = newNode; 
+        }
+        
     }
     listLength++;
 }
