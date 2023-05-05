@@ -101,11 +101,6 @@ void handleInput(LinkedList &list, string stockFile, string coinFile){
                     printInvalidInput();
                 }
                 
-            } else if(!isNumber(input)){
-                if(input == ""){
-                    std::cout<<std::endl;
-                    displayMenu();
-                }
             } else {
                 printInvalidInput();
             }
