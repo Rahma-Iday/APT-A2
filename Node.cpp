@@ -1,8 +1,8 @@
 #include "Node.h"
 
 Node::Node(Stock info){
-
-    data = &info;
+    data = new Stock;
+    *data = info;
     next = nullptr;
 
 };
