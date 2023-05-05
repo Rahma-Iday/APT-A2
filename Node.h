@@ -80,7 +80,6 @@ public:
     Stock* data;
     // pointer to the next node in the list 
     Node* next;
-    Node* back;
 };
 
 #endif // NODE_H

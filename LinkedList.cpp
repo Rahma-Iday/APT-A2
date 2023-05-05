@@ -1,21 +1,63 @@
 #include "LinkedList.h"
+#include <iostream>
+#include <iomanip>
 
 LinkedList::LinkedList() {
     head = nullptr;
-    tail = nullptr;
     listLength = 0;
 }
 
 void LinkedList::add(Stock info){
-    
+    Node* newNode = new Node(info);
+    if(head == nullptr){
+        head = newNode;
+    }else{
+        Node* temp = head;
+        while(temp->next != nullptr){
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+    listLength++;
 }
 
 void LinkedList::remove(std::string id){
-
+    Node* temp = head;
+    Node* prev = nullptr;
+    while(temp != nullptr){
+        if(temp->data->id == id){
+            if(prev == nullptr){
+                head = temp->next;
+            }else{
+                prev->next = temp->next;
+            }
+            std::cout <<temp->data->id << " - "<<temp->data->name<< " - "<<temp->data->description<< 
+            " - has been removed from the system"<< std::endl;
+            delete temp;
+            listLength--;
+            return;
+        }
+        prev = temp;
+        temp = temp->next;
+    }
 }
 
-void LinkedList::print(){
+void LinkedList::print() {
+    std::cout << "Items Menu" << std::endl;
+    std::cout << "----------" << std::endl;
+    std::cout << "ID   |Name                                    | Available | Price" << std::endl;
+    std::cout << "-------------------------------------------------------------------" << std::endl;
 
+    Node* temp = head;
+    while (temp != nullptr) {
+        std::cout << std::left << std::setw(5) << temp->data->id << "|";
+        std::cout << std::left << std::setw(40) << temp->data->name << "| ";
+        std::cout << std::left << std::setw(9) << temp->data->on_hand << "| ";
+        std::cout << "$" << temp->data->price.dollars << ".";
+        std::cout << std::setfill('0') << std::setw(2) << temp->data->price.cents << std::endl;
+        std::cout << std::setfill(' '); 
+        temp = temp->next;
+    }
 }
 
 unsigned int LinkedList::getListLength(){
@@ -23,34 +65,106 @@ unsigned int LinkedList::getListLength(){
 }
 
 unsigned int LinkedList::getStockLevels(std::string id){
-    return 1;
+    int stockLevel = 0;
+    Node* temp = head;
+
+    while(temp != nullptr){
+        if(temp->data->id == id){
+            stockLevel = temp->data->on_hand;
+            break;
+        }
+        temp = temp->next;
+    }
+
+    return stockLevel;
 }
 
 std::string LinkedList::getName(std::string id){
-    return "name";
+    std::string name = "Not Found";
+    Node* temp = head;
+
+    while(temp != nullptr){
+        if(temp->data->id == id){
+            name = temp->data->name;
+            break;
+        }
+        temp = temp->next;
+    }
+
+    return name;
 }
 
 std::string LinkedList::getDescription(std::string id){
-    return "description";
+    std::string description = "Not Found";
+    Node* temp = head;
+
+    while(temp != nullptr){
+        if(temp->data->id == id){
+            description = temp->data->description;
+            break;
+        }
+        temp = temp->next;
+    }
+
+    return description;
 }
 
 Price LinkedList::getPrice(std::string id){
     Price price;
     price.dollars = 0;
     price.cents = 0;
+
+    for(int i=0; i < idList.size(); i++){
+        if(idList[i] == id){
+            Node* temp = head;
+            while(temp != nullptr){
+                if(temp->data->id == id){
+                    price.dollars = temp->data->price.dollars;
+                    price.cents = temp->data->price.cents;
+                }
+                temp = temp->next;
+            }
+        }else{
+            price.dollars = 0;
+            price.cents = 0;
+        }
+    }
+
     return price;
 }
 
 void LinkedList::restock(){
-
+    Node* temp = head;
+    while(temp != nullptr){
+        temp->data->on_hand = DEFAULT_STOCK_LEVEL;
+        temp = temp->next;
+    }
 }
 
 void LinkedList::buy(std::string id){
-
+    Node* temp = head;
+    while(temp != nullptr){
+        if(temp->data->id == id){
+            if(temp->data->on_hand > 0){
+                temp->data->on_hand--;
+                std::cout << "You have purchased " << temp->data->name << std::endl;
+            }else{
+                std::cout << "Sorry, " << temp->data->name << " is out of stock" << std::endl;
+            }
+        }
+        temp = temp->next;
+    }
 }
 
 void LinkedList::deleteList(){
-
+    Node* temp = head;
+    while(temp != nullptr){
+        Node* next = temp->next;
+        delete temp;
+        temp = next;
+    }
+    head = nullptr;
+    listLength = 0;
 }
 
 

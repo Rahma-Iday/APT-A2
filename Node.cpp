@@ -4,7 +4,6 @@ Node::Node(Stock info){
 
     data = &info;
     next = nullptr;
-    back = nullptr;
 
 };
 Node::~Node(){
