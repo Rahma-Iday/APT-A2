@@ -8,5 +8,4 @@ Node::Node(Stock info){
 };
 Node::~Node(){
     // TODO
-    delete data;
 };
