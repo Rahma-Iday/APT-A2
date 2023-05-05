@@ -16,7 +16,7 @@ All Tasks:
     REQ14: Memory Leaks and Abuses
     REQ15: write test case (M1): GROUP
         - check files exist (when files in same directory as ppd.ex)
-        - check files exist (when files are in different directory)
+        - check files exist (when files are in different directory) <- TODO
         - stock.dat and coin.dat when less feilds are provided
         - stock.dat and coin.dat when more number of feilds provided
         - stock.dat when price doesnt have a "."
