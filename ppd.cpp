@@ -73,7 +73,11 @@ int main(int argc, char **argv)
 
                         } else if (isNumber(input)){
                             optionNo = std::stoi(input);
-                            validOption = true;
+                            if (optionNo>0 && optionNo<10){
+                                validOption = true;  
+                            } else {
+                                printInvalidInput();
+                            }
                             
                         } else {
                             printInvalidInput();
@@ -82,7 +86,7 @@ int main(int argc, char **argv)
                     
                     if (optionNo == 1){
                         // Display items 
-                        list.print();
+                        // list.print();
                         // no exiting program, thus re-displays main menu
                     } else if (optionNo == 2){
                         // Purchase Item
