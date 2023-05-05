@@ -53,7 +53,7 @@ void LinkedList::print() {
         std::cout << std::left << std::setw(5) << temp->data->id << "|";
         std::cout << std::left << std::setw(40) << temp->data->name << "| ";
         std::cout << std::left << std::setw(9) << temp->data->on_hand << "| ";
-        std::cout << "$" << temp->data->price.dollars << ".";
+        std::cout << "$" << temp->data->price.dollars << PRICE_DELIM;
         std::cout << std::setfill('0') << std::setw(2) << temp->data->price.cents << std::endl;
         std::cout << std::setfill(' '); 
         temp = temp->next;
