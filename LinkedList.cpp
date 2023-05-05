@@ -114,7 +114,7 @@ Price LinkedList::getPrice(std::string id){
     price.dollars = 0;
     price.cents = 0;
 
-    for(int i=0; i < idList.size(); i++){
+    for(int i=0; i < static_cast<int>(idList.size()); i++){
         if(idList[i] == id){
             Node* temp = head;
             while(temp != nullptr){
