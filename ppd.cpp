@@ -27,7 +27,7 @@ void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coi
 void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile, vector<Coin>& coins);
 void removeItem(LinkedList &list);
 void saveAndExit(LinkedList &list, string stockFile, string coinFile);
-void displayCoins(std::vector<Coin> coins);
+void displayCoins(std::vector<Coin> &coins);
 void resetCoins(std::vector<Coin> &coins);
 
 
@@ -569,7 +569,7 @@ void removeItem(LinkedList &list){
 #include <iostream>
 #include "Coin.h"
 
-void displayCoins(std::vector<Coin> coins) {
+void displayCoins(std::vector<Coin> &coins) {
     std::cout << "Coins Summary" << std::endl;
     std::cout << "-------------" << std::endl;
     std::cout << "Denomination    |    Count" << std::endl;
