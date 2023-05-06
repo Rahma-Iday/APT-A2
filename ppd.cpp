@@ -23,6 +23,8 @@ void printInvalidInput();
 Stock getNewItem(LinkedList &list);
 void getPrice(unsigned int& x, unsigned int& y);
 void printDebug();
+void handleInput(LinkedList &list);
+void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo);
 
 
 
@@ -35,8 +37,7 @@ int main(int argc, char **argv)
 {
     /* validate command line arguments */
     // TODO
-    if (argc == 3)
-    {
+    if (argc == 3){
         string stockFile(argv[1]);
         std::string coinFile(argv[2]);
 
@@ -50,97 +51,101 @@ int main(int argc, char **argv)
                 vector<Stock> stock = loadStockData(stockFile, STOCK_DELIM);
                 vector<Coin> coins = loadCoinData(coinFile, DELIM[0]);
 
-
                 // put stock vector's stocks into linked list 
                 LinkedList list;
                 for (int i=0; i<static_cast<int>(stock.size()); i++)
                 {
                     list.add(stock[i]);
                 }
-
                 /*load coin into array data type?*/
                 
-                // create a loop that executes the return to main menu functionality until exit options (3 or 9) are pressed
-                // set a bool value to ensure main menu is displayed until valid input given
-                bool exitProgram = false;
-                while (!exitProgram)
-                {
-                    
-                    /* display main menu recursively until valid input given*/
-                    bool validOption = false;
-                    int optionNo = 0;
-                    while(!validOption)
-                    {
-                        displayMenu();
-                        std::cout << "Please enter your choice: ";
-                        string input = readInput();
-
-                        if (std::cin.eof()){
-                            std::cout << "\nCtrl-D was pressed, terminating program." << std::endl;
-                            exitProgram = true;
-                            validOption = true;
-
-                        } else if (isNumber(input)){
-                            optionNo = std::stoi(input);
-                            if (optionNo>0 && optionNo<10){
-                                validOption = true;  
-                            } else {
-                                printInvalidInput();
-                            }
-                            
-                        } else {
-                            printInvalidInput();
-                        }
-                    }
-                    
-                    if (optionNo == 1){
-                        // Display items 
-                        list.print();
-                        std::cout << std::endl;
-                        // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 2){
-                        // Purchase Item
-                        // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 3){
-                        // Save and Exit
-                        exitProgram = true; // only if method returns true tho
-                    } else if (optionNo == 4){
-                        // Add item
-                        Stock newItem = getNewItem(list);
-                        list.add(newItem);
-                        std::cout<< "This Item \"" << newItem.name << " - " << newItem.description << 
-                        "\" has now been added to the menu" <<std::endl;
-                        // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 5){
-                        // Remove Item
-                        // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 6){
-                        // Display Coins
-                        // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 7){
-                        // Reset Stock
-                        // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 8){
-                        // Reset Coins
-                        // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 9){
-                        // Abort the Program
-                        exitProgram = true; 
-                    }  
-
-                }
-
-                
+                handleInput(list);
             }
         }
     }
-    else
-    {
+    else{
         std::cout << "Please make sure exactly 3 command line arguments are entered in the form:\n ./ppd <stockfile> <coinsfile>" << std::endl;
     }
-
     return EXIT_SUCCESS;
 }
+
+
+void handleInput(LinkedList &list){
+
+    // create a loop that executes the return to main menu functionality until exit options (3 or 9) are pressed
+    // set a bool value to ensure main menu is displayed until valid input given
+    bool exitProgram = false;
+    displayMenu();
+    while (!exitProgram)
+    {
+        bool validOption = false;
+        int optionNo = 0;
+        while(!validOption)
+        {
+            std::cout << "Please enter your choice: ";
+            string input = readInput();
+
+            if (std::cin.eof()){
+                std::cout << "\nCtrl-D was pressed, terminating program." << std::endl;
+                exitProgram = true;
+                validOption = true;
+
+            } else if (isNumber(input)){
+                optionNo = std::stoi(input);
+                if (optionNo>0 && optionNo<10){
+                    validOption = true; 
+                }else {
+                    printInvalidInput();
+                }
+                
+            } else if(!isNumber(input)){
+                if(input == ""){
+                    std::cout<<std::endl;
+                    displayMenu();
+                }
+            } else {
+                printInvalidInput();
+            }
+        }
+        std::cout << std::endl;
+        handleOptions(list, exitProgram, optionNo); 
+    }
+}
+
+
+void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo){
+    if (optionNo == 1){
+    // Display items 
+    list.print();
+    std::cout << std::endl;
+    // no exiting program, thus re-displays main menu
+    } else if (optionNo == 2){// Purchase Item
+    
+    } else if (optionNo == 3){// Save and Exit
+        exitProgram = true; // only if method returns true tho
+    
+    } else if (optionNo == 4){// Add item
+        Stock newItem = getNewItem(list);
+        list.add(newItem);
+        std::cout<< "This Item \"" << newItem.name << " - " << newItem.description << 
+        "\" has now been added to the menu" <<std::endl;
+        std::cout << std::endl;
+    
+    } else if (optionNo == 5){// Remove Item
+    
+    } else if (optionNo == 6){// Display Coins
+    
+    } else if (optionNo == 7){// Reset Stock
+    
+    } else if (optionNo == 8){// Reset Coins
+    
+    } else if (optionNo == 9){// Abort the Program
+        exitProgram = true; 
+    }
+}
+
+
+
 
 bool readStockData(string fileName, char delim)
 {
