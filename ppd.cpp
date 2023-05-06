@@ -15,6 +15,9 @@ vector<Stock> loadStockData(string fileName, char delim);
 vector<Coin> loadCoinData(string fileName, char delim);
 void makePurchase();
 void displayMenu();
+string readInput();
+bool isNumber(string s);
+void printInvalidInput();
 
 /**
  * manages the running of the program, initialises data structures, loads
@@ -34,11 +37,88 @@ int main(int argc, char **argv)
         // check if both files exists, only then read data
         if (checkFilesExist(stockFile, coinFile))
         {
-            // check if data in both Files are valid, then only loads data
+            // check if both Files have valid data by reading, then only loads data
             if (readStockData(stockFile, STOCK_DELIM) && readCoinData(coinFile, DELIM[0]))
             {
                 vector<Stock> stock = loadStockData(stockFile, STOCK_DELIM);
                 vector<Coin> coins = loadCoinData(coinFile, DELIM[0]);
+
+
+                // put stock vector's stocks into linked list 
+                LinkedList list;
+                for (int i=0; i<static_cast<int>(stock.size()); i++)
+                {
+                    list.add(stock[i]);
+                }
+
+                /*load coin into array data type?*/
+                
+                // create a loop that executes the return to main menu functionality until exit options (3 or 9) are pressed
+                // set a bool value to ensure main menu is displayed until valid input given
+                bool exitProgram = false;
+                while (!exitProgram)
+                {
+                    /* display main menu recursively until valid input given*/
+                    bool validOption = false;
+                    int optionNo = 0;
+                    while(!validOption)
+                    {
+                        displayMenu();
+                        std::cout << "Please enter your choice: ";
+                        string input = readInput();
+
+                        if (std::cin.eof()){
+                            std::cout << "\nCtrl-D was pressed, terminating program." << std::endl;
+                            exitProgram = true;
+                            validOption = true;
+
+                        } else if (isNumber(input)){
+                            optionNo = std::stoi(input);
+                            if (optionNo>0 && optionNo<10){
+                                validOption = true;  
+                            } else {
+                                printInvalidInput();
+                            }
+                            
+                        } else {
+                            printInvalidInput();
+                        }
+                    }
+                    
+                    if (optionNo == 1){
+                        // Display items 
+                        list.print();
+                        std::cout << std::endl;
+                        // no exiting program, thus re-displays main menu
+                    } else if (optionNo == 2){
+                        // Purchase Item
+                        // no exiting program, thus re-displays main menu
+                    } else if (optionNo == 3){
+                        // Save and Exit
+                        exitProgram = true; // only if method returns true tho
+                    } else if (optionNo == 4){
+                        // Add item
+                        // no exiting program, thus re-displays main menu
+                    } else if (optionNo == 5){
+                        // Remove Item
+                        // no exiting program, thus re-displays main menu
+                    } else if (optionNo == 6){
+                        // Display Coins
+                        // no exiting program, thus re-displays main menu
+                    } else if (optionNo == 7){
+                        // Reset Stock
+                        // no exiting program, thus re-displays main menu
+                    } else if (optionNo == 8){
+                        // Reset Coins
+                        // no exiting program, thus re-displays main menu
+                    } else if (optionNo == 9){
+                        // Abort the Program
+                        exitProgram = true; 
+                    }  
+
+                }
+
+                
             }
         }
     }
@@ -304,5 +384,45 @@ void displayMenu()
 }
 
 void makePurchase()
+{}
+/*credit: A1 source code helper.cpp file*/
+string readInput()
 {
+    string input;
+    std::getline(std::cin, input);
+    std::cout << std::endl;
+
+    return input;
+}
+
+/*credit: A1 source code helper.cpp file*/
+bool isNumber(string s)
+{
+    string::const_iterator it = s.begin();
+    char dot = '.';
+    int nb_dots = 0;
+    while (it != s.end()) 
+    {
+        if (*it == dot)
+        {
+            nb_dots++;
+            if (nb_dots>1)
+            {
+                break;
+            }
+        }   
+        else if (!isdigit(*it))
+        {
+            break;
+        } 
+
+        ++it;
+    }
+    return !s.empty() && s[0] != dot && it == s.end();
+}
+
+/*prints Invalid input*/
+void printInvalidInput()
+{
+    std::cout << "Invalid input.\n" << std::endl;
 }

@@ -6,16 +6,16 @@ All Tasks:
     REQ4: Display items (sarvesh)
     REQ5: Purchase items (vic) 
     REQ6: Save and exit (krishna) 
-    REQ7: Add item 
-    REQ8: Remove items (sarvesh)
-    REQ9: Reset stock levels (sarvesh)
+    REQ7: Add item (sarvesh)
+    REQ8: Remove items(sarvesh)
+    REQ9: Reset stock levels(sarvesh)
     REQ10: Reset coin count
     REQ11: Display coins
     REQ12: "Abort"
     REQ13: Return to Menu Functionality
     REQ14: Memory Leaks and Abuses
     REQ15: write test case (M1): GROUP
-        - check files exist (when files in same directory as ppd executable)
+        - check files exist (when files in same directory as ppd.ex)
         - check files exist (when files are in different directory)
         - stock.dat and coin.dat when less feilds are provided
         - stock.dat and coin.dat when more number of feilds provided
