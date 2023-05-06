@@ -79,11 +79,12 @@ void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coi
 
     // create a loop that executes the return to main menu functionality until exit options (3 or 9) are pressed
     // set a bool value to ensure main menu is displayed until valid input given
-    displayMenu();
+   
     bool exitProgram = false;
 
     while (!exitProgram)
     {
+         displayMenu();
         bool validOption = false;
         int optionNo = 0;
         while(!validOption)
@@ -123,7 +124,6 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
     list.print();
     // no exiting program, thus re-displays main menu
     } else if (optionNo == 2){// Purchase Item
-        
     
     } else if (optionNo == 3){// Save and Exit
         saveAndExit(list, stockFile, coinFile);
@@ -135,7 +135,6 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
 
         std::cout<< "This Item \"" << newItem.name << " - " << newItem.description << 
         "\" has now been added to the menu" <<std::endl;
-    
     } else if (optionNo == 5){// Remove Item
         removeItem(list);
     } else if (optionNo == 6){// Display Coins
@@ -523,7 +522,7 @@ void getPrice(unsigned int& x, unsigned int& y) {
         std::string inputStr = readInput();
         size_t decimalPos = inputStr.find('.');
         if ((decimalPos != std::string::npos && (inputStr.length() - decimalPos == 3 || inputStr.length() - decimalPos == 2))|| isNumber(inputStr)) {
-            if (inputStr.length() - decimalPos == 2) {
+            if (inputStr.length() - decimalPos == 2 && !isNumber(inputStr)) {
                 inputStr += "0";
             }
 
