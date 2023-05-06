@@ -22,6 +22,9 @@ public:
     void restock();
     void buy(std::string id);
     void deleteList();
+    std::vector<std::string> idList;
+    void printIdList();
+
 
 
 private:
@@ -30,7 +33,7 @@ private:
   
     // how many nodes are there in the list?
     unsigned listLength;
-    std::vector<std::string> idList;
+    
 };
 
 #endif  // LINKEDLIST_H

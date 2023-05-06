@@ -9,6 +9,7 @@ LinkedList::LinkedList() {
 
 void LinkedList::add(Stock info){
     Node* newNode = new Node(info);
+    idList.push_back(info.id);
 
 
     if(head == nullptr){
@@ -180,4 +181,13 @@ void LinkedList::deleteList(){
 
 LinkedList::~LinkedList() {
     deleteList();
+}
+
+
+void LinkedList::printIdList() {
+    std::cout << "ID List: ";
+    for (const std::string& id : idList) {
+        std::cout << id << " ";
+    }
+    std::cout << std::endl;
 }

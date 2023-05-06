@@ -5,6 +5,8 @@
 #include <set>
 #include <iomanip>
 #include <algorithm>
+#include <cmath>
+#include <stdexcept>
 using std::string;
 using std::vector;
 
@@ -17,6 +19,11 @@ void displayMenu();
 string readInput();
 bool isNumber(string s);
 void printInvalidInput();
+Stock getNewItem(LinkedList &list);
+void getPrice(unsigned int& x, unsigned int& y);
+void printDebug();
+
+
 
 /**
  * manages the running of the program, initialises data structures, loads
@@ -57,6 +64,7 @@ int main(int argc, char **argv)
                 bool exitProgram = false;
                 while (!exitProgram)
                 {
+                    
                     /* display main menu recursively until valid input given*/
                     bool validOption = false;
                     int optionNo = 0;
@@ -97,6 +105,10 @@ int main(int argc, char **argv)
                         exitProgram = true; // only if method returns true tho
                     } else if (optionNo == 4){
                         // Add item
+                        Stock newItem = getNewItem(list);
+                        list.add(newItem);
+                        std::cout<< "This Item \"" << newItem.name << " - " << newItem.description << 
+                        "\" has now been added to the menu" <<std::endl;
                         // no exiting program, thus re-displays main menu
                     } else if (optionNo == 5){
                         // Remove Item
@@ -387,7 +399,6 @@ string readInput()
 {
     string input;
     std::getline(std::cin, input);
-    std::cout << std::endl;
 
     return input;
 }
@@ -423,3 +434,75 @@ void printInvalidInput()
 {
     std::cout << "Invalid input.\n" << std::endl;
 }
+
+std::string generateId(const std::vector<std::string>& idList){
+    int maxID = -1;
+
+    for(const std::string& id : idList){
+        int idNum = std::stoi(id.substr(1));
+        if(idNum > maxID){
+            maxID = idNum;
+        }
+    }
+
+    std::ostringstream newId;
+    newId << "I" << std::setfill('0') << std::setw(4) << (maxID + 1);
+    
+    return newId.str();
+}
+
+void printDebug(){
+    std::cout << "IM WORKING" << std::endl;
+}
+
+
+Stock getNewItem(LinkedList &list){
+    std::string id = generateId(list.idList);
+    std::cout << "The id of the new stock will be: " << id << std::endl;
+    std::cout << "Please enter the name of the item: ";
+    std::string name = readInput();
+    std::cout << "Please enter the description of the item: ";
+    std::string description = readInput();
+    std::cout << "Please enter the price of the item: ";
+    unsigned int cents;
+    unsigned int dollars;
+    getPrice(dollars, cents);
+    Price price = {dollars, cents};
+    Stock newStock = {id, name, description, price, DEFAULT_STOCK_LEVEL};
+    return newStock;
+}
+
+void getPrice(unsigned int& x, unsigned int& y) {
+    bool gotPrice = false;
+    double input;
+
+    while (!gotPrice) {
+        std::string inputStr = readInput();
+        size_t decimalPos = inputStr.find('.');
+        if (decimalPos != std::string::npos && (inputStr.length() - decimalPos == 3 || inputStr.length() - decimalPos == 2)) {
+            if (inputStr.length() - decimalPos == 2) {
+                inputStr += "0";
+            }
+
+            try {
+                input = std::stod(inputStr);
+                x = static_cast<unsigned int>(input);
+                y = static_cast<unsigned int>(round((input - x) * 100));
+
+                if (y % 5 != 0) {
+                    throw std::invalid_argument("Invalid input. Please enter a valid price:");
+                }
+
+                gotPrice = true;
+
+            } catch (const std::invalid_argument& e) {
+                std::cerr << "Invalid input. Please enter a valid price:";
+            } catch (const std::out_of_range& e) {
+                std::cerr << "Invalid input. Please enter a valid price:";
+            }
+        } else {
+            std::cerr << "Invalid input. Please enter a number with exactly two digits after the decimal point:";
+        }
+    }
+}
+
