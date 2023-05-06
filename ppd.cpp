@@ -23,10 +23,11 @@ void printInvalidInput();
 Stock getNewItem(LinkedList &list);
 void getPrice(unsigned int& x, unsigned int& y);
 void printDebug();
-void handleInput(LinkedList &list, string stockFile, string coinFile);
-void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile);
+void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coin>& coins);
+void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile, vector<Coin>& coins);
 void removeItem(LinkedList &list);
 void saveAndExit(LinkedList &list, string stockFile, string coinFile);
+void displayCoins(std::vector<Coin> coins);
 
 
 
@@ -61,7 +62,7 @@ int main(int argc, char **argv)
                 }
                 /*load coin into array data type?*/
                 
-                handleInput(list, stockFile, coinFile);
+                handleInput(list, stockFile, coinFile, coins);
             }
         }
     }
@@ -72,7 +73,7 @@ int main(int argc, char **argv)
 }
 
 
-void handleInput(LinkedList &list, string stockFile, string coinFile){
+void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coin>& coins){
 
     // create a loop that executes the return to main menu functionality until exit options (3 or 9) are pressed
     // set a bool value to ensure main menu is displayed until valid input given
@@ -108,13 +109,13 @@ void handleInput(LinkedList &list, string stockFile, string coinFile){
             }
         }
         std::cout << std::endl;
-        handleOptions(list, exitProgram, optionNo, stockFile, coinFile);
+        handleOptions(list, exitProgram, optionNo, stockFile, coinFile, coins);
         std::cout << std::endl;
     }
 }
 
 
-void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile){
+void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile, vector<Coin>& coins){
     if (optionNo == 1){
     // Display items 
     list.print();
@@ -136,7 +137,7 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
     } else if (optionNo == 5){// Remove Item
         removeItem(list);
     } else if (optionNo == 6){// Display Coins
-        
+        displayCoins(coins);   
     } else if (optionNo == 7){// Reset Stock
         list.resetStock();
         std::cout << "\"All stock has been reset to " << DEFAULT_STOCK_LEVEL << "\"" << std::endl;
@@ -558,5 +559,50 @@ void removeItem(LinkedList &list){
     } else {
         std::cout << "Item not found." << std::endl;
     }
+}
+
+#include <vector>
+#include <iomanip>
+#include <sstream>
+#include <iostream>
+#include "Coin.h"
+
+void displayCoins(std::vector<Coin> coins) {
+    std::cout << "Coins Summary" << std::endl;
+    std::cout << "-------------" << std::endl;
+    std::cout << "Denomination    |    Count" << std::endl;
+    std::cout << "---------------------------" << std::endl;
+
+    std::vector<std::string> denominations;
+
+    const std::string denomStrings[] = {
+        "5 Cents",
+        "10 Cents",
+        "20 Cents",
+        "50 Cents",
+        "1 Dollar",
+        "2 Dollars",
+        "5 Dollars",
+        "10 Dollars"
+    };
+
+    for (Coin coin : coins) {
+        std::ostringstream denom;
+        denom << denomStrings[coin.denom];
+
+        if (coin.denom != ONE_DOLLAR && coin.denom != FIVE_DOLLARS) {
+            denom << " ";
+        }
+
+        denominations.push_back(denom.str());
+    }
+
+    for (int i = 0; i < denominations.size(); i++) {
+        std::cout << std::left << std::setw(15) << denominations[i] << " |" << std::right << std::setw(10) << coins[i].count << std::endl;
+    }
+
+    
+
+    std::cout << "---------------------------" << std::endl;
 }
 
