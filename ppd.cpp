@@ -76,8 +76,8 @@ void handleInput(LinkedList &list, string stockFile, string coinFile){
 
     // create a loop that executes the return to main menu functionality until exit options (3 or 9) are pressed
     // set a bool value to ensure main menu is displayed until valid input given
-    bool exitProgram = false;
     displayMenu();
+    bool exitProgram = false;
 
     while (!exitProgram)
     {
@@ -101,11 +101,6 @@ void handleInput(LinkedList &list, string stockFile, string coinFile){
                     printInvalidInput();
                 }
                 
-            } else if(!isNumber(input)){
-                if(input == ""){
-                    std::cout<<std::endl;
-                    displayMenu();
-                }
             } else {
                 printInvalidInput();
             }
