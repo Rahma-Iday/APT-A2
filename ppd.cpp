@@ -101,6 +101,8 @@ void handleInput(LinkedList &list, string stockFile, string coinFile){
                     printInvalidInput();
                 }
                 
+            }else if(input==""){
+                displayMenu();
             } else {
                 printInvalidInput();
             }
@@ -114,9 +116,9 @@ void handleInput(LinkedList &list, string stockFile, string coinFile){
 
 void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile){
     if (optionNo == 1){
-        // Display items 
-        list.print();
-        // no exiting program, thus re-displays main menu
+    // Display items 
+    list.print();
+    // no exiting program, thus re-displays main menu
     } else if (optionNo == 2){// Purchase Item
         
     
@@ -160,7 +162,7 @@ void saveAndExit(LinkedList &list, string stockFile, string coinFile)
             outputStockFile << std::setfill('0') << std::setw(2)<< list.getPrice(id).cents << STOCK_DELIM;
             outputStockFile << list.getStockLevels(id) << "\n";
         }
-        
+
         outputStockFile.close();
         std::cout << "Stock File saved successfully." << std::endl;
     } else {
@@ -496,6 +498,9 @@ Stock getNewItem(LinkedList &list){
     std::cout << "The id of the new stock will be: " << id << std::endl;
     std::cout << "Please enter the name of the item: ";
     std::string name = readInput();
+    if (!name.empty() && std::islower(name[0])) {
+    name[0] = std::toupper(name[0]);
+    }
     std::cout << "Please enter the description of the item: ";
     std::string description = readInput();
     std::cout << "Please enter the price of the item: ";
@@ -514,7 +519,7 @@ void getPrice(unsigned int& x, unsigned int& y) {
     while (!gotPrice) {
         std::string inputStr = readInput();
         size_t decimalPos = inputStr.find('.');
-        if (decimalPos != std::string::npos && (inputStr.length() - decimalPos == 3 || inputStr.length() - decimalPos == 2)) {
+        if ((decimalPos != std::string::npos && (inputStr.length() - decimalPos == 3 || inputStr.length() - decimalPos == 2))|| isNumber(inputStr)) {
             if (inputStr.length() - decimalPos == 2) {
                 inputStr += "0";
             }
