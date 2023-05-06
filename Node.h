@@ -1,25 +1,26 @@
 #ifndef NODE_H
 #define NODE_H
-#include <string> 
+#include <string>
 #include "Coin.h"
+#include <iomanip>
+#include <iostream>
 
-
-//The length of the id string not counting the nul terminator
+// The length of the id string not counting the nul terminator
 #define IDLEN 5
 
-//The maximum length of a product name not counting the nul terminator
+// The maximum length of a product name not counting the nul terminator
 #define NAMELEN 40
 
-//The maximum length of a product description not counting the nul terminator.
+// The maximum length of a product description not counting the nul terminator.
 #define DESCLEN 255
 
-//The default coin level to reset the coins to on request
+// The default coin level to reset the coins to on request
 #define DEFAULT_COIN_COUNT 20
 
-//The default stock level that all new stock should start at and that we should reset to on restock
+// The default stock level that all new stock should start at and that we should reset to on restock
 #define DEFAULT_STOCK_LEVEL 20
 
-//The number of denominations of currency available in the system 
+// The number of denominations of currency available in the system
 #define NUM_DENOMS 8
 
 // Stock delimiter
@@ -29,7 +30,6 @@
 #define PRICE_DELIM '.'
 
 #define CENTLEN 2
-
 
 /**
  * a structure to represent a price. One of the problems with the floating
@@ -42,6 +42,7 @@ class Price
 public:
     // The dollar value, and the cents value for some price
     unsigned dollars, cents;
+    void print();
 };
 
 /**
@@ -50,21 +51,20 @@ public:
 class Stock
 {
 public:
-
-    //the unique id for this item
+    // the unique id for this item
     std::string id;
 
-    //the name of this item
+    // the name of this item
     std::string name;
-    
-    //the description of this item   
+
+    // the description of this item
     std::string description;
-    
-    //the price of this item
+
+    // the price of this item
     Price price;
-    
-    // how many of this item do we have on hand? 
-    unsigned on_hand;    
+
+    // how many of this item do we have on hand?
+    unsigned on_hand;
 };
 
 /**
@@ -76,10 +76,10 @@ public:
     Node();
     Node(Stock temp);
     ~Node();
-    // pointer to the data held for the node 
-    Stock* data;
-    // pointer to the next node in the list 
-    Node* next;
+    // pointer to the data held for the node
+    Stock *data;
+    // pointer to the next node in the list
+    Node *next;
 };
 
 #endif // NODE_H

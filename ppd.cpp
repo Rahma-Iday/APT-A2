@@ -13,7 +13,7 @@ bool readStockData(string fileName, char delim);
 bool readCoinData(string fileName, char delim);
 vector<Stock> loadStockData(string fileName, char delim);
 vector<Coin> loadCoinData(string fileName, char delim);
-void makePurchase();
+void makePurchase(LinkedList list);
 void displayMenu();
 string readInput();
 bool isNumber(string s);
@@ -43,16 +43,15 @@ int main(int argc, char **argv)
                 vector<Stock> stock = loadStockData(stockFile, STOCK_DELIM);
                 vector<Coin> coins = loadCoinData(coinFile, DELIM[0]);
 
-
-                // put stock vector's stocks into linked list 
+                // put stock vector's stocks into linked list
                 LinkedList list;
-                for (int i=0; i<static_cast<int>(stock.size()); i++)
+                for (int i = 0; i < static_cast<int>(stock.size()); i++)
                 {
                     list.add(stock[i]);
                 }
 
                 /*load coin into array data type?*/
-                
+
                 // create a loop that executes the return to main menu functionality until exit options (3 or 9) are pressed
                 // set a bool value to ensure main menu is displayed until valid input given
                 bool exitProgram = false;
@@ -61,64 +60,120 @@ int main(int argc, char **argv)
                     /* display main menu recursively until valid input given*/
                     bool validOption = false;
                     int optionNo = 0;
-                    while(!validOption)
+                    while (!validOption)
                     {
                         displayMenu();
                         std::cout << "Please enter your choice: ";
                         string input = readInput();
 
-                        if (std::cin.eof()){
+                        if (std::cin.eof())
+                        {
                             std::cout << "\nCtrl-D was pressed, terminating program." << std::endl;
                             exitProgram = true;
                             validOption = true;
-
-                        } else if (isNumber(input)){
+                        }
+                        else if (isNumber(input))
+                        {
                             optionNo = std::stoi(input);
-                            if (optionNo>0 && optionNo<10){
-                                validOption = true;  
-                            } else {
+                            if (optionNo > 0 && optionNo < 10)
+                            {
+                                validOption = true;
+                            }
+                            else
+                            {
                                 printInvalidInput();
                             }
-                            
-                        } else {
+                        }
+                        else
+                        {
                             printInvalidInput();
                         }
                     }
-                    
-                    if (optionNo == 1){
-                        // Display items 
+
+                    if (optionNo == 1)
+                    {
+                        // Display items
                         list.print();
                         std::cout << std::endl;
                         // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 2){
+                    }
+                    else if (optionNo == 2)
+                    {
                         // Purchase Item
+                        // get input
+                        std::cout << "Purchase Item" << std::endl
+                                  << "-------------" << std::endl;
+
+                        bool invalidItem = true;
+                        while (invalidItem)
+                        {
+                            std::cout << "Please enter the id of the item you wish to purchase:";
+                            string itemToPurchase = readInput();
+                            // check the item does not exist
+                            if (list.getName(itemToPurchase) == "Not Found")
+                            {
+                                std::cout << "The item id you entered could not be found\n"
+                                          << std::endl;
+                            }
+                            else
+                            {
+                                // if there is no stock
+                                if (list.getStockLevels(itemToPurchase) == 0)
+                                {
+                                    std::cout << "There is no stock available, please select another item\n"
+                                              << std::endl;
+                                }
+                                else
+                                {
+                                    string itemName = list.getName(itemToPurchase);
+                                    std::cout << "You have selected " << itemName
+                                              << " - " << list.getDescription(itemToPurchase)
+                                              << ". This will cost you $ ";
+                                    list.getPrice(itemToPurchase).print();
+                                    std::cout << std::endl;
+                                    std::cout << "exiting" << std::endl;
+                                    invalidItem = false;
+                                }
+                            }
+                        }
                         // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 3){
+                    }
+                    else if (optionNo == 3)
+                    {
                         // Save and Exit
                         exitProgram = true; // only if method returns true tho
-                    } else if (optionNo == 4){
+                    }
+                    else if (optionNo == 4)
+                    {
                         // Add item
                         // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 5){
+                    }
+                    else if (optionNo == 5)
+                    {
                         // Remove Item
                         // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 6){
+                    }
+                    else if (optionNo == 6)
+                    {
                         // Display Coins
                         // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 7){
+                    }
+                    else if (optionNo == 7)
+                    {
                         // Reset Stock
                         // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 8){
+                    }
+                    else if (optionNo == 8)
+                    {
                         // Reset Coins
                         // no exiting program, thus re-displays main menu
-                    } else if (optionNo == 9){
+                    }
+                    else if (optionNo == 9)
+                    {
                         // Abort the Program
-                        exitProgram = true; 
-                    }  
-
+                        exitProgram = true;
+                    }
                 }
-
-                
             }
         }
     }
@@ -383,8 +438,18 @@ void displayMenu()
               << "Select your option (1-9): " << std::endl;
 }
 
-void makePurchase()
-{}
+void makePurchase(LinkedList list)
+{
+
+    // get user money
+    // check here if we have enough change
+    // if we do then process transaction by
+    // updating stock
+    // updating money
+    // printing change given
+    // invalidItem = false;
+}
+
 /*credit: A1 source code helper.cpp file*/
 string readInput()
 {
@@ -401,20 +466,20 @@ bool isNumber(string s)
     string::const_iterator it = s.begin();
     char dot = '.';
     int nb_dots = 0;
-    while (it != s.end()) 
+    while (it != s.end())
     {
         if (*it == dot)
         {
             nb_dots++;
-            if (nb_dots>1)
+            if (nb_dots > 1)
             {
                 break;
             }
-        }   
+        }
         else if (!isdigit(*it))
         {
             break;
-        } 
+        }
 
         ++it;
     }
@@ -424,5 +489,6 @@ bool isNumber(string s)
 /*prints Invalid input*/
 void printInvalidInput()
 {
-    std::cout << "Invalid input.\n" << std::endl;
+    std::cout << "Invalid input.\n"
+              << std::endl;
 }
