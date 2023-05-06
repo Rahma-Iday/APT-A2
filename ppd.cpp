@@ -131,8 +131,9 @@ int main(int argc, char **argv)
                                               << ". This will cost you $ ";
                                     list.getPrice(itemToPurchase).print();
                                     std::cout << std::endl;
-                                    std::cout << "printing coins lol" << std::endl;
-                                    makePurchase(coins, list.getPrice(itemToPurchase).getTotal());
+                                    std::cout << "printing total" << std::endl;
+                                    std::cout << list.getPrice(itemToPurchase).getTotal() << std::endl;
+                                    // makePurchase(coins, list.getPrice(itemToPurchase).getTotal());
                                     invalidItem = false;
                                 }
                             }

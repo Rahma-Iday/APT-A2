@@ -14,8 +14,10 @@ void Price::print()
     std::cout << this->dollars;
     std::cout << "." << std::setfill('0') << std::setw(2) << this->cents << std::endl;
 }
-double Price::getTotal(){
-    double total = this->dollars;
-    total += this->cents/100;
+double Price::getTotal()
+{
+    double total = this->cents;
+    total = total / 100;
+    total = total += this->dollars;
     return total;
 }
