@@ -13,6 +13,8 @@ bool readStockData(string fileName, char delim);
 bool readCoinData(string fileName, char delim);
 vector<Stock> loadStockData(string fileName, char delim);
 vector<Coin> loadCoinData(string fileName, char delim);
+void makePurchase();
+void displayMenu();
 
 /**
  * manages the running of the program, initialises data structures, loads
@@ -299,4 +301,8 @@ void displayMenu()
               << "    8. Reset Coins\n"
               << "    9. Abort Program\n"
               << "Select your option (1-9): " << std::endl;
+}
+
+void makePurchase()
+{
 }
