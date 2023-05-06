@@ -43,6 +43,7 @@ public:
     // The dollar value, and the cents value for some price
     unsigned dollars, cents;
     void print();
+    double getTotal();
 };
 
 /**

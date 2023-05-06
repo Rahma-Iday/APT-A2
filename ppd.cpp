@@ -17,7 +17,7 @@ void displayMenu();
 string readInput();
 bool isNumber(string s);
 void printInvalidInput();
-bool makePurchase(vector<Coin> &coinVect);
+bool makePurchase(vector<Coin> &coinVect, double price);
 
 /**
  * manages the running of the program, initialises data structures, loads
@@ -132,7 +132,7 @@ int main(int argc, char **argv)
                                     list.getPrice(itemToPurchase).print();
                                     std::cout << std::endl;
                                     std::cout << "printing coins lol" << std::endl;
-                                    makePurchase(coins);
+                                    makePurchase(coins, list.getPrice(itemToPurchase).getTotal());
                                     invalidItem = false;
                                 }
                             }
