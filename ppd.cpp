@@ -13,6 +13,7 @@ bool readStockData(string fileName, char delim);
 bool readCoinData(string fileName, char delim);
 vector<Stock> loadStockData(string fileName, char delim);
 vector<Coin> loadCoinData(string fileName, char delim);
+void makePurchase();
 void displayMenu();
 string readInput();
 bool isNumber(string s);
@@ -382,6 +383,8 @@ void displayMenu()
               << "Select your option (1-9): " << std::endl;
 }
 
+void makePurchase()
+{}
 /*credit: A1 source code helper.cpp file*/
 string readInput()
 {
