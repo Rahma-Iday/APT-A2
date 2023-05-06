@@ -19,7 +19,7 @@ public:
     std::string getName(std::string id);
     std::string getDescription(std::string id);
     Price getPrice(std::string id);
-    void restock();
+    void resetStock();
     void buy(std::string id);
     void deleteList();
     std::vector<std::string> idList;

@@ -25,6 +25,7 @@ void getPrice(unsigned int& x, unsigned int& y);
 void printDebug();
 void handleInput(LinkedList &list);
 void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo);
+void removeItem(LinkedList &list);
 
 
 
@@ -108,7 +109,8 @@ void handleInput(LinkedList &list){
             }
         }
         std::cout << std::endl;
-        handleOptions(list, exitProgram, optionNo); 
+        handleOptions(list, exitProgram, optionNo);
+        std::cout << std::endl;
     }
 }
 
@@ -117,7 +119,6 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo){
     if (optionNo == 1){
     // Display items 
     list.print();
-    std::cout << std::endl;
     // no exiting program, thus re-displays main menu
     } else if (optionNo == 2){// Purchase Item
     
@@ -127,16 +128,17 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo){
     } else if (optionNo == 4){// Add item
         Stock newItem = getNewItem(list);
         list.add(newItem);
+
         std::cout<< "This Item \"" << newItem.name << " - " << newItem.description << 
         "\" has now been added to the menu" <<std::endl;
-        std::cout << std::endl;
     
     } else if (optionNo == 5){// Remove Item
-    
+        removeItem(list);
     } else if (optionNo == 6){// Display Coins
-    
+        
     } else if (optionNo == 7){// Reset Stock
-    
+        list.resetStock();
+        std::cout << "\"All stock has been reset to " << DEFAULT_STOCK_LEVEL << "\"" << std::endl;
     } else if (optionNo == 8){// Reset Coins
     
     } else if (optionNo == 9){// Abort the Program
@@ -511,6 +513,20 @@ void getPrice(unsigned int& x, unsigned int& y) {
         } else {
             std::cerr << "Invalid input. Please enter a number with exactly two digits after the decimal point:";
         }
+    }
+}
+
+void removeItem(LinkedList &list){
+    std::cout << "Enter the item id of the item to remove from the menu: ";
+    std::string id = readInput();
+    std::string name = list.getName(id);
+    std::string description = list.getDescription(id);
+    
+    if(name != "Not Found"){
+        std::cout <<"\""<< id << " - " << name << " - " << description << "\" has been removed from the system."<< std::endl;
+        list.remove(id);
+    } else {
+        std::cout << "Item not found." << std::endl;
     }
 }
 

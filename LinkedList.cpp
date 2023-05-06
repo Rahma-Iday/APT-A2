@@ -49,8 +49,6 @@ void LinkedList::remove(std::string id){
             }else{
                 prev->next = temp->next;
             }
-            std::cout <<temp->data->id << " - "<<temp->data->name<< " - "<<temp->data->description<< 
-            " - has been removed from the system"<< std::endl;
             delete temp;
             listLength--;
             return;
@@ -144,7 +142,7 @@ Price LinkedList::getPrice(std::string id){
     return price;
 }
 
-void LinkedList::restock(){
+void LinkedList::resetStock(){
     Node* temp = head;
     while(temp != nullptr){
         temp->data->on_hand = DEFAULT_STOCK_LEVEL;
