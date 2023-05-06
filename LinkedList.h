@@ -9,6 +9,7 @@ class LinkedList
 public:
     LinkedList();
     ~LinkedList();
+    std::vector<std::string> idList;
 
     // more functions to be added perhaps...
     void add(Stock info);
@@ -22,7 +23,7 @@ public:
     void resetStock();
     void buy(std::string id);
     void deleteList();
-    std::vector<std::string> idList;
+    
     void printIdList();
 
 
