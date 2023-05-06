@@ -28,6 +28,8 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
 void removeItem(LinkedList &list);
 void saveAndExit(LinkedList &list, string stockFile, string coinFile);
 void displayCoins(std::vector<Coin> coins);
+void resetCoins(std::vector<Coin> &coins);
+
 
 
 
@@ -142,7 +144,7 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
         list.resetStock();
         std::cout << "\"All stock has been reset to " << DEFAULT_STOCK_LEVEL << "\"" << std::endl;
     } else if (optionNo == 8){// Reset Coins
-    
+        resetCoins(coins);
     } else if (optionNo == 9){// Abort the Program
         exitProgram = true; 
     }
@@ -604,5 +606,12 @@ void displayCoins(std::vector<Coin> coins) {
     
 
     std::cout << "---------------------------" << std::endl;
+}
+
+void resetCoins(std::vector<Coin> &coins){
+    for (int i = 0; i < coins.size(); i++) {
+        coins[i].count = DEFAULT_COIN_COUNT;
+    }
+    std::cout << "\"All coins have been reset to the default level of "<< DEFAULT_COIN_COUNT << "\"" << std::endl;
 }
 
