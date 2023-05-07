@@ -18,6 +18,6 @@ double Price::getTotal()
 {
     double total = this->cents;
     total = total / 100;
-    total = total += this->dollars;
+    total += this->dollars;
     return total;
 }
