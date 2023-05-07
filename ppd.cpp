@@ -28,7 +28,7 @@ void removeItem(LinkedList &list);
 void saveAndExit(LinkedList &list, string stockFile, string coinFile);
 void displayCoins(std::vector<Coin> &coins);
 void resetCoins(std::vector<Coin> &coins);
-boool makePurchase(vector<Coin> &coinVect, double itemPrice, LinkedList list);
+bool makePurchase(vector<Coin> &coinVect, double itemPrice, LinkedList list);
 
 /**
  * manages the running of the program, initialises data structures, loads
