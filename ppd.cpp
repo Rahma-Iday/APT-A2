@@ -28,7 +28,7 @@ void removeItem(LinkedList &list);
 void saveAndExit(LinkedList &list, string stockFile, string coinFile);
 void displayCoins(std::vector<Coin> &coins);
 void resetCoins(std::vector<Coin> &coins);
-bool makePurchase(vector<Coin> &coinVect, double itemPrice, LinkedList list);
+void makePurchase(vector<Coin> &coinVect, LinkedList &list);
 
 /**
  * manages the running of the program, initialises data structures, loads
@@ -135,6 +135,7 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
     }
     else if (optionNo == 2)
     { // Purchase Item
+        makePurchase(coins, list);
     }
     else if (optionNo == 3)
     { // Save and Exit
@@ -453,10 +454,11 @@ void displayMenu()
               << "Select your option (1-9): " << std::endl;
 }
 
-bool makePurchase(vector<Coin> &coinVect, double itemPrice, LinkedList list)
+/**
+ * Handles if a user selects purchase item / option 2
+ **/
+void makePurchase(vector<Coin> &coinVect, LinkedList &list)
 {
-    // Purchase Item
-    // get input
     std::cout << "Purchase Item" << std::endl
               << "-------------" << std::endl;
 
@@ -470,6 +472,10 @@ bool makePurchase(vector<Coin> &coinVect, double itemPrice, LinkedList list)
         {
             std::cout << "The item id you entered could not be found\n"
                       << std::endl;
+        }
+        else if (itemToPurchase == "")
+        {
+            // exit don't want to purchase
         }
         else
         {
@@ -489,34 +495,58 @@ bool makePurchase(vector<Coin> &coinVect, double itemPrice, LinkedList list)
                 std::cout << std::endl;
                 std::cout << "printing total" << std::endl;
                 std::cout << list.getPrice(itemToPurchase).getTotal() << std::endl;
-                // makePurchase(coins, list.getPrice(itemToPurchase).getTotal());
+                std::vector<int> expectedValues = {5, 10, 20, 50, 100, 200, 500, 1000};
+                int totalInserted = 0;
+                // something to keep track of user input
+                double itemPrice = list.getPrice(itemToPurchase).getTotal();
+                vector<Coin> userCoins;
+                int enum_count = 0;
+
+                while (enum_count < coinVect.size())
+                {
+                    std::string denomString, countString;
+                    Coin coin;
+                    coin.denom = static_cast<Denomination>(enum_count);
+                    enum_count++;
+                    coin.count = 0;
+
+                    userCoins.push_back(coin);
+                }
+
+                while (totalInserted < itemPrice)
+                {
+                    std::cout << "Please hand over the money - type in the value of each note//coin in cents." << std::endl;
+                    string currentCoin = readInput();
+                    if (isNumber(currentCoin))
+                    {
+                        int currCoin = stoi(currentCoin);
+                        int index = std::distance(expectedValues.begin(), std::find(expectedValues.begin(), expectedValues.end(), currCoin));
+                        if (-1) // the denomination is valid
+                        {
+                            // add to userCoins count
+                            // get index of currCoin in set
+                            userCoins[index].count += 1;
+                            std::cout << "You entered" << userCoins[index].denom << std::endl;
+                        }
+                        else
+                        {
+                            std::cout << "Error: $" << currentCoin
+                                      << " is not a valid denomination of money. Please try again."
+                                      << std::endl;
+                        }
+                    }
+                    else if (currentCoin == "")
+                    {
+                        // exit this we don't want to process transaction anymore
+                        // make itemPrice = 0 and then exit loop
+                        itemPrice = 0;
+                        std::cout << "Cancelling transaction" << std::endl;
+                    }
+                    totalInserted = itemPrice;
+                }
                 invalidItem = false;
             }
         }
-    }
-    std::set<int> expectedSet = {5, 10, 20, 50, 100, 200, 500, 1000};
-    bool validPurchase = false;
-    int totalInserted = 0;
-    // something to keep track of user input
-
-    while (totalInserted < itemPrice)
-    {
-        std::cout << "Please hand over the money - type in the value of each note//coin in cents." << std::endl;
-        string currentCoin = readInput();
-        if (isNumber(currentCoin))
-        {
-            int currCoin = stoi(currentCoin);
-            if (expectedSet.count(currCoin))
-            {
-            }
-            else
-            {
-                std::cout << "Error: $" << currentCoin
-                          << " is not a valid denomination of money. Please try again."
-                          << std::endl;
-            }
-        }
-        totalInserted = itemPrice;
     }
 
     // return true if purchase can be completed
@@ -524,8 +554,6 @@ bool makePurchase(vector<Coin> &coinVect, double itemPrice, LinkedList list)
     {
         std::cout << (coinVect[i].denom) << std::endl;
     }
-    return validPurchase;
-
     // get user money
     // check here if we have enough change
     // if we do then process transaction by
