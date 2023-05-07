@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <limits>
 using std::string;
 using std::vector;
 
@@ -477,11 +478,19 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
             std::cout << "The item id you entered could not be found\n"
                       << std::endl;
         }
+        else if (std::cin.eof())
+        {
+            // re-open closed cin
+            std::cin.clear();
+            std::cin.rdbuf(std::cin.rdbuf()); // This line reopens the cin stream
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            // exit , pressed ctrl-d
+            std::cout << "Exiting!" << std::flush;
+            invalidItem = false;
+        }
         else if (itemToPurchase == "")
         {
             // exit don't want to purchase
-            invalidItem = false;
-            std::cout << "Exiting!" << std::endl;
         }
         else
         {
@@ -563,12 +572,12 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                 {
                     // first do we have enough change?
                     // then calculte change
-                    double changeRequired = std::round((totalInserted - itemPrice) * 100) / 100.0;
-                    if (changeRequired == 0.0)
+                    double changeRequired = std::round((totalInserted - itemPrice) * 100) / 100.0;// round to 2dp
+                    if (changeRequired == 0.0)// no change required
                     {
                         std::cout << "No change given, enjoy!" << std::endl;
                     }
-                    else if (enoughChange(changeRequired, coinVect, userCoins))
+                    else if (enoughChange(changeRequired, coinVect, userCoins))// enough change
                     {
                         std::cout << "Here is your "
                                   << itemName
@@ -578,7 +587,7 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                                   << ": ";
                         processMoney(changeRequired, coinVect, userCoins);
                         // update stock
-                        list.decrementStock(itemToPurchase);
+                        list.buy(itemToPurchase);
                     }
                     else
                     {
