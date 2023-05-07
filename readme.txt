@@ -2,9 +2,9 @@ Information for compiling and running the program.
 All Tasks:
     REQ1: Command-line Arguments : DONE (rahma)
     REQ2: Load data : DONE : (rahma)
-    REQ3: Display main menu (vic)
+    REQ3: Display main menu (vic) DONE
     REQ4: Display items (sarvesh)
-    REQ5: Purchase items (vic) 
+    REQ5: Purchase items (vic) ALMOST DONE 
     REQ6: Save and exit : 1/2 DONE
     REQ7: Add item : DONE (sarvesh)
     REQ8: Remove items: DONE (sarvesh)
