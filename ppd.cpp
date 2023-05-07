@@ -562,7 +562,7 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                         // exit this we don't want to process transaction anymore
                         // make itemPrice = 0 and then exit loop
                         itemPrice = 0;
-                        std::cout << "Change of mind - here is your change:" << std::endl;
+                        std::cout << "Change of mind - here is your change: ";
                         printAllCoins(userCoins);
                         // delete user coins
                     }
@@ -689,10 +689,26 @@ void printAllCoins(vector<Coin> &coins)
 string readInput()
 {
     string input;
-    std::getline(std::cin, input);
+    string result;
 
-    return input;
+    if (std::getline(std::cin, input))
+    {
+        result = input;
+    }
+    else if (std::cin.eof())
+    {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        result = "";
+    }
+    else
+    {
+        result = "";
+    }
+
+    return result;
 }
+
 
 /*credit: A1 source code helper.cpp file*/
 bool isNumber(string s)
