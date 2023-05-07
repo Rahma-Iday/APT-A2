@@ -10,7 +10,7 @@ LinkedList::LinkedList()
 
 void LinkedList::add(Stock info)
 {
-    Node* newNode = new Node(info);
+    Node *newNode = new Node(info);
     idList.push_back(info.id);
 
     if (head == nullptr)
@@ -84,9 +84,9 @@ void LinkedList::print()
     Node *temp = head;
     while (temp != nullptr)
     {
-        std::cout << std::left << std::setw(5) << temp->data->id << "|";
-        std::cout << std::left << std::setw(40) << temp->data->name << "| ";
-        std::cout << std::left << std::setw(9) << temp->data->on_hand << "| ";
+        std::cout << std::left << std::setfill(' ') << std::setw(5) << temp->data->id << "|";
+        std::cout << std::left << std::setfill(' ') << std::setw(40) << temp->data->name << "| ";
+        std::cout << std::left << std::setfill(' ') << std::setw(9) << temp->data->on_hand << "| ";
         std::cout << "$" << temp->data->price.dollars << PRICE_DELIM;
         std::cout << std::setfill('0') << std::setw(2) << temp->data->price.cents << std::endl;
         std::cout << std::setfill(' ');
@@ -173,9 +173,11 @@ Price LinkedList::getPrice(std::string id)
     return price;
 }
 
-void LinkedList::resetStock(){
-    Node* temp = head;
-    while(temp != nullptr){
+void LinkedList::resetStock()
+{
+    Node *temp = head;
+    while (temp != nullptr)
+    {
         temp->data->on_hand = DEFAULT_STOCK_LEVEL;
         temp = temp->next;
     }
@@ -220,10 +222,11 @@ LinkedList::~LinkedList()
     deleteList();
 }
 
-
-void LinkedList::printIdList() {
+void LinkedList::printIdList()
+{
     std::cout << "ID List: ";
-    for (const std::string& id : idList) {
+    for (const std::string &id : idList)
+    {
         std::cout << id << " ";
     }
     std::cout << std::endl;

@@ -28,7 +28,10 @@ void removeItem(LinkedList &list);
 void saveAndExit(LinkedList &list, string stockFile, string coinFile);
 void displayCoins(std::vector<Coin> &coins);
 void resetCoins(std::vector<Coin> &coins);
-bool makePurchase(vector<Coin> &coinVect, double itemPrice, LinkedList list);
+void makePurchase(vector<Coin> &coinVect, LinkedList &list);
+bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins);
+void processMoney(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins);
+void printAllCoins(vector<Coin> &coins);
 
 /**
  * manages the running of the program, initialises data structures, loads
@@ -135,6 +138,7 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
     }
     else if (optionNo == 2)
     { // Purchase Item
+        makePurchase(coins, list);
     }
     else if (optionNo == 3)
     { // Save and Exit
@@ -453,14 +457,16 @@ void displayMenu()
               << "Select your option (1-9): " << std::endl;
 }
 
-bool makePurchase(vector<Coin> &coinVect, double itemPrice, LinkedList list)
+/**
+ * Handles if a user selects purchase item / option 2
+ **/
+void makePurchase(vector<Coin> &coinVect, LinkedList &list)
 {
-    // Purchase Item
-    // get input
     std::cout << "Purchase Item" << std::endl
               << "-------------" << std::endl;
 
     bool invalidItem = true;
+    bool enoughInserted = false;
     while (invalidItem)
     {
         std::cout << "Please enter the id of the item you wish to purchase:";
@@ -470,6 +476,10 @@ bool makePurchase(vector<Coin> &coinVect, double itemPrice, LinkedList list)
         {
             std::cout << "The item id you entered could not be found\n"
                       << std::endl;
+        }
+        else if (itemToPurchase == "")
+        {
+            // exit don't want to purchase
         }
         else
         {
@@ -487,52 +497,203 @@ bool makePurchase(vector<Coin> &coinVect, double itemPrice, LinkedList list)
                           << ". This will cost you $ ";
                 list.getPrice(itemToPurchase).print();
                 std::cout << std::endl;
-                std::cout << "printing total" << std::endl;
-                std::cout << list.getPrice(itemToPurchase).getTotal() << std::endl;
-                // makePurchase(coins, list.getPrice(itemToPurchase).getTotal());
+                std::vector<int> expectedValues = {5, 10, 20, 50, 100, 200, 500, 1000};
+                double totalInserted = 0.0;
+                // something to keep track of user input
+                double itemPrice = list.getPrice(itemToPurchase).getTotal();
+                vector<Coin> userCoins;
+                int enum_count = 0;
+
+                while (enum_count < coinVect.size())
+                {
+                    std::string denomString, countString;
+                    Coin coin;
+                    coin.denom = static_cast<Denomination>(enum_count);
+                    enum_count++;
+                    coin.count = 0;
+
+                    userCoins.push_back(coin);
+                }
+                std::cout << "Please hand over the money - type in the value of each note/coin in cents." << std::endl;
+                std::cout << "Press enter or ctrl-d on a new line to cancel this purchase:" << std::endl;
+
+                while (totalInserted < itemPrice) // take user input or exit transaction
+                {
+                    std::cout << "You currently owe $"
+                              << std::fixed << std::setprecision(2) << std::setfill('0')
+                              << (itemPrice - totalInserted) << ": ";
+                    string currentCoin = readInput();
+                    if (isNumber(currentCoin))
+                    {
+                        int currCoin = stoi(currentCoin);
+                        int index = std::distance(expectedValues.begin(), std::find(expectedValues.begin(), expectedValues.end(), currCoin));
+                        if (index != 8) // the denomination is valid
+                        {
+                            // add to userCoins count
+                            // get index of currCoin in set
+                            userCoins[index].count += 1;
+                            double amountInserted = userCoins[index].getDollarValue();
+                            std::cout << "You entered " << amountInserted
+                                      << std::endl;
+                            totalInserted += userCoins[index].getDollarValue();
+                        }
+                        else
+                        {
+                            std::cout << "Error: $"
+                                      << std::fixed << std::setprecision(2) << std::setfill('0')
+                                      << ((double)currCoin / 100)
+                                      << " is not a valid denomination of money. Please try again."
+                                      << std::endl;
+                        }
+                    }
+                    else if (currentCoin == "")
+                    {
+                        // exit this we don't want to process transaction anymore
+                        // make itemPrice = 0 and then exit loop
+                        itemPrice = 0;
+                        std::cout << "Change of mind - here is your change:" << std::endl;
+                        printAllCoins(userCoins);
+                        // delete user coins
+                    }
+                    enoughInserted = totalInserted > itemPrice;
+                }
+                if (enoughInserted && itemPrice != 0) // transaction is to be processed
+                {
+                    // first do we have enough change?
+                    // then calculte change
+                    double changeRequired = std::round((totalInserted - itemPrice) * 100) / 100.0;
+                    if (changeRequired == 0.0)
+                    {
+                        std::cout << "No change given, enjoy!" << std::endl;
+                    }
+                    else if (enoughChange(changeRequired, coinVect, userCoins))
+                    {
+                        std::cout << "Here is your "
+                                  << itemName
+                                  << " and your change of $ "
+                                  << std::fixed << std::setprecision(2) << std::setfill('0')
+                                  << changeRequired
+                                  << ": ";
+                        processMoney(changeRequired, coinVect, userCoins);
+                        // update stock
+                        
+                    }
+                    else
+                    {
+                        // not enough change
+                        std::cout << "Sorry, we don't have sufficient funds to process your transaction" << std::endl;
+                        std::cout << "Here if your refund: ";
+                        printAllCoins(userCoins);
+                    }
+                }
                 invalidItem = false;
             }
         }
     }
-    std::set<int> expectedSet = {5, 10, 20, 50, 100, 200, 500, 1000};
-    bool validPurchase = false;
-    int totalInserted = 0;
-    // something to keep track of user input
-
-    while (totalInserted < itemPrice)
-    {
-        std::cout << "Please hand over the money - type in the value of each note//coin in cents." << std::endl;
-        string currentCoin = readInput();
-        if (isNumber(currentCoin))
-        {
-            int currCoin = stoi(currentCoin);
-            if (expectedSet.count(currCoin))
-            {
-            }
-            else
-            {
-                std::cout << "Error: $" << currentCoin
-                          << " is not a valid denomination of money. Please try again."
-                          << std::endl;
-            }
-        }
-        totalInserted = itemPrice;
-    }
-
-    // return true if purchase can be completed
-    for (int i = coinVect.size() - 1; i >= 0; i--)
-    {
-        std::cout << (coinVect[i].denom) << std::endl;
-    }
-    return validPurchase;
-
-    // get user money
-    // check here if we have enough change
     // if we do then process transaction by
     // updating stock
     // updating money
     // printing change given
-    // invalidItem = false;
+}
+// bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins)
+// {
+//     double changeToGive = 0;
+
+//     for (int i = coins.size() - 1; i >= 0; i--)
+//     {
+//         int coinsGiven = 0;
+//         int userCoinsGiven = 0;
+//         while (changeToGive <= changeRequired && (coins[i].getDollarValue() <= (double)(changeRequired - changeToGive)))
+//         {
+//             coins[i].print();
+//             if (coins[i].count >= 1 && coinsGiven < coins[i].count)
+//             {
+//                 changeToGive += coins[i].getDollarValue();
+//             }
+//             else if (userCoins[i].count >= 1 && userCoinsGiven < userCoins[i].count)
+//             {
+//                 changeToGive += userCoins[i].getDollarValue();
+//             }
+//         }
+//         std::cout << std::endl;
+//     }
+
+//     return changeToGive == changeRequired;
+// }
+bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins)
+{
+    double changeToGive = 0;
+    double epsilon = 0.0001; // set a small epsilon value
+
+    for (int i = coins.size() - 1; i >= 0; i--)
+    {
+        int coinsUsed = 0;
+        int userCoinsUsed = 0;
+        while (changeToGive + epsilon <= changeRequired && coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon))
+        {
+
+            if (coins[i].count >= 1 && coins[i].count > coinsUsed)
+            {
+                changeToGive += coins[i].getDollarValue();
+                coinsUsed++;
+            }
+            else if (userCoins[i].count >= 1 && userCoins[i].count > userCoinsUsed)
+            {
+                changeToGive += userCoins[i].getDollarValue();
+                userCoinsUsed++;
+            }
+        }
+    }
+
+    return abs(changeToGive - changeRequired) < epsilon;
+}
+
+void processMoney(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins)
+{
+    double changeToGive = 0;
+    double epsilon = 0.0001; // set a small epsilon value
+
+    for (int i = coins.size() - 1; i >= 0; i--)
+    {
+
+        while (changeToGive + epsilon <= changeRequired && coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon))
+        {
+            coins[i].print();
+            std::cout << " ";
+
+            if (coins[i].count >= 1)
+            {
+                changeToGive += coins[i].getDollarValue();
+                coins[i].count--;
+            }
+            else if (userCoins[i].count >= 1)
+            {
+                changeToGive += userCoins[i].getDollarValue();
+                userCoins[i].count--;
+            }
+        }
+    }
+
+    // then add coins in user coins to coins and delete user coins
+    for (int i = coins.size() - 1; i >= 0; i--)
+    {
+        coins[i].count = coins[i].count + userCoins[i].count;
+    }
+}
+
+void printAllCoins(vector<Coin> &coins)
+{
+    for (int i = coins.size() - 1; i >= 0; i--)
+    {
+        if (coins[i].count > 0)
+        {
+            for (int j = 0; j < coins[i].count; j++)
+            {
+                coins[i].print();
+                std::cout << " ";
+            }
+        }
+    }
 }
 
 /*credit: A1 source code helper.cpp file*/
@@ -746,6 +907,7 @@ void removeItem(LinkedList &list)
 
 void displayCoins(std::vector<Coin> &coins)
 {
+
     std::cout << "Coins Summary" << std::endl;
     std::cout << "-------------" << std::endl;
     std::cout << "Denomination    |    Count" << std::endl;
@@ -778,7 +940,9 @@ void displayCoins(std::vector<Coin> &coins)
 
     for (int i = 0; i < denominations.size(); i++)
     {
-        std::cout << std::left << std::setw(15) << denominations[i] << " |" << std::right << std::setw(10) << coins[i].count << std::endl;
+        std::cout << std::left << std::setfill(' ') << std::setw(15)
+                  << denominations[i] << " |"
+                  << std::right << std::setfill(' ') << std::setw(10) << coins[i].count << std::endl;
     }
 
     std::cout << "---------------------------" << std::endl;
