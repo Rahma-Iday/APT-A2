@@ -173,23 +173,6 @@ Price LinkedList::getPrice(std::string id)
     return price;
 }
 
-void LinkedList::decrementStock(std::string id)
-{
-    Price price;
-    price.dollars = 0;
-    price.cents = 0;
-
-    Node *temp = head;
-    while (temp != nullptr)
-    {
-        if (temp->data->id == id)
-        {
-            temp->data->on_hand = temp->data->on_hand - 1;
-        }
-        temp = temp->next;
-    }
-}
-
 void LinkedList::resetStock()
 {
     Node *temp = head;

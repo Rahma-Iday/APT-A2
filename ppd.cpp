@@ -480,8 +480,6 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
         else if (itemToPurchase == "")
         {
             // exit don't want to purchase
-            invalidItem = false;
-            std::cout << "Exiting!" << std::endl;
         }
         else
         {
@@ -578,7 +576,7 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                                   << ": ";
                         processMoney(changeRequired, coinVect, userCoins);
                         // update stock
-                        list.decrementStock(itemToPurchase);
+                        
                     }
                     else
                     {
