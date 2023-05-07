@@ -521,12 +521,14 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                     {
                         int currCoin = stoi(currentCoin);
                         int index = std::distance(expectedValues.begin(), std::find(expectedValues.begin(), expectedValues.end(), currCoin));
-                        if (-1) // the denomination is valid
+                        if (index != -1) // the denomination is valid
                         {
                             // add to userCoins count
                             // get index of currCoin in set
                             userCoins[index].count += 1;
-                            std::cout << "You entered" << userCoins[index].denom << std::endl;
+                            double amountInserted = userCoins[index].getDollarValue();
+                            std::cout << "You entered" << amountInserted << std::endl;
+                            totalInserted += amountInserted;
                         }
                         else
                         {

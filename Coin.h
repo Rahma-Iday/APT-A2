@@ -22,6 +22,8 @@ public:
     
     // the count of how many of these are in the cash register
     unsigned count;
+    // value in dollars
+    double getDollarValue();
 };
 
 #endif // COIN_H
