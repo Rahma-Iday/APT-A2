@@ -20,8 +20,8 @@ void displayMenu();
 string readInput();
 bool isNumber(string s);
 void printInvalidInput();
-Stock getNewItem(LinkedList &list);
-void getPrice(unsigned int& x, unsigned int& y);
+void getNewItem(LinkedList &list);
+bool getPrice(unsigned int& x, unsigned int& y);
 void printDebug();
 void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coin>& coins);
 void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile, vector<Coin>& coins);
@@ -81,10 +81,11 @@ void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coi
     // set a bool value to ensure main menu is displayed until valid input given
    
     bool exitProgram = false;
+    displayMenu();
 
     while (!exitProgram)
     {
-         displayMenu();
+         
         bool validOption = false;
         int optionNo = 0;
         while(!validOption)
@@ -130,11 +131,7 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
         exitProgram = true; // only if method returns true tho
     
     } else if (optionNo == 4){// Add item
-        Stock newItem = getNewItem(list);
-        list.add(newItem);
-
-        std::cout<< "This Item \"" << newItem.name << " - " << newItem.description << 
-        "\" has now been added to the menu" <<std::endl;
+        getNewItem(list);
     } else if (optionNo == 5){// Remove Item
         removeItem(list);
     } else if (optionNo == 6){// Display Coins
@@ -495,28 +492,60 @@ void printDebug(){
 }
 
 
-Stock getNewItem(LinkedList &list){
+void getNewItem(LinkedList &list){
+    bool itemAdded = false;
+    std::string name = "";
+    std::string description = "";
     std::string id = generateId(list.idList);
     std::cout << "The id of the new stock will be: " << id << std::endl;
     std::cout << "Please enter the name of the item: ";
-    std::string name = readInput();
-    if (!name.empty() && std::islower(name[0])) {
-    name[0] = std::toupper(name[0]);
+    while(!itemAdded){
+
+
+        if(name != "" && description != ""){
+            unsigned int cents;
+            unsigned int dollars;
+            bool keyboardInterupt = getPrice(dollars, cents);
+            Price price = {dollars, cents};
+            if(!keyboardInterupt){
+                Stock newStock = {id, name, description, price, DEFAULT_STOCK_LEVEL};
+                list.add(newStock);
+                std::cout<< "This Item \"" << name << " - " << description << "\" has now been added to the menu" <<std::endl;
+            }
+            itemAdded = true;      
+        }else{
+            std::string input = readInput();
+
+            if(input == ""){
+                std::cout << "Item not added. Returning to main menu." << std::endl;
+                itemAdded = true;
+            }else if(name==""){
+                if(input.size() <= NAMELEN){
+                    if (!name.empty() && std::islower(name[0])) {
+                    name[0] = std::toupper(name[0]);
+                    }
+                    name = input;
+                    std::cout << "Please enter the description of the item: ";
+                }else{
+                    std::cout << "Name too long. Please enter a name less than " << NAMELEN << " characters long: ";
+                }
+            }else if(description==""){
+                if(input.size() <= DESCLEN){
+                    description = input;
+                    std::cout << "Please enter the price of the item: ";
+                }else{
+                    std::cout << "Description too long. Please enter a description less than " << DESCLEN << " characters long: ";
+                }
+
+            }
+        }
     }
-    std::cout << "Please enter the description of the item: ";
-    std::string description = readInput();
-    std::cout << "Please enter the price of the item: ";
-    unsigned int cents;
-    unsigned int dollars;
-    getPrice(dollars, cents);
-    Price price = {dollars, cents};
-    Stock newStock = {id, name, description, price, DEFAULT_STOCK_LEVEL};
-    return newStock;
 }
 
-void getPrice(unsigned int& x, unsigned int& y) {
+bool getPrice(unsigned int& x, unsigned int& y) {
     bool gotPrice = false;
     double input;
+    bool interupt = false;
 
     while (!gotPrice) {
         std::string inputStr = readInput();
@@ -542,10 +571,16 @@ void getPrice(unsigned int& x, unsigned int& y) {
             } catch (const std::out_of_range& e) {
                 std::cerr << "Invalid input. Please enter a valid price:";
             }
-        } else {
+        }else if(inputStr == "") {
+            std::cout << "Item not added. Returning to main menu." << std::endl;
+            interupt = true;
+            gotPrice = true;
+        }
+         else {
             std::cerr << "Invalid input. Please enter a number with exactly two digits after the decimal point:";
         }
     }
+    return interupt;
 }
 
 void removeItem(LinkedList &list){
