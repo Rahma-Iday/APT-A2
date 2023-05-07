@@ -175,9 +175,10 @@ Price LinkedList::getPrice(std::string id)
 
 void LinkedList::decrementStock(std::string id)
 {
-    Price price;
-    price.dollars = 0;
-    price.cents = 0;
+    // got an unused variable warning
+    //Price price;
+    //price.dollars = 0;
+    //price.cents = 0;
 
     Node *temp = head;
     while (temp != nullptr)
