@@ -83,15 +83,14 @@ void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coi
     // set a bool value to ensure main menu is displayed until valid input given
 
     bool exitProgram = false;
-    displayMenu();
 
     while (!exitProgram)
     {
-
         bool validOption = false;
         int optionNo = 0;
         while (!validOption)
         {
+            displayMenu();
             std::cout << "Please enter your choice: ";
             string input = readInput();
 
@@ -113,6 +112,7 @@ void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coi
                     printInvalidInput();
                 }
             }
+            // request to sarvesh: can i remove this now YOU HATER
             else if (input == "")
             {
                 displayMenu();
