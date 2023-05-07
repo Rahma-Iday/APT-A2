@@ -15,23 +15,20 @@ bool readStockData(string fileName, char delim);
 bool readCoinData(string fileName, char delim);
 vector<Stock> loadStockData(string fileName, char delim);
 vector<Coin> loadCoinData(string fileName, char delim);
-void makePurchase();
 void displayMenu();
 string readInput();
 bool isNumber(string s);
 void printInvalidInput();
 void getNewItem(LinkedList &list);
-bool getPrice(unsigned int& x, unsigned int& y);
+bool getPrice(unsigned int &x, unsigned int &y);
 void printDebug();
-void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coin>& coins);
-void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile, vector<Coin>& coins);
+void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coin> &coins);
+void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile, vector<Coin> &coins);
 void removeItem(LinkedList &list);
 void saveAndExit(LinkedList &list, string stockFile, string coinFile);
 void displayCoins(std::vector<Coin> &coins);
 void resetCoins(std::vector<Coin> &coins);
-
-
-
+boool makePurchase(vector<Coin> &coinVect, double itemPrice, LinkedList list);
 
 /**
  * manages the running of the program, initialises data structures, loads
@@ -42,7 +39,8 @@ int main(int argc, char **argv)
 {
     /* validate command line arguments */
     // TODO
-    if (argc == 3){
+    if (argc == 3)
+    {
         string stockFile(argv[1]);
         std::string coinFile(argv[2]);
 
@@ -56,59 +54,68 @@ int main(int argc, char **argv)
                 vector<Stock> stock = loadStockData(stockFile, STOCK_DELIM);
                 vector<Coin> coins = loadCoinData(coinFile, DELIM[0]);
 
-                // put stock vector's stocks into linked list 
+                // put stock vector's stocks into linked list
                 LinkedList list;
-                for (int i=0; i<static_cast<int>(stock.size()); i++)
+                for (int i = 0; i < static_cast<int>(stock.size()); i++)
                 {
                     list.add(stock[i]);
                 }
                 /*load coin into array data type?*/
-                
+
                 handleInput(list, stockFile, coinFile, coins);
             }
         }
     }
-    else{
+    else
+    {
         std::cout << "Please make sure exactly 3 command line arguments are entered in the form:\n ./ppd <stockfile> <coinsfile>" << std::endl;
     }
     return EXIT_SUCCESS;
 }
 
-
-void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coin>& coins){
+void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coin> &coins)
+{
 
     // create a loop that executes the return to main menu functionality until exit options (3 or 9) are pressed
     // set a bool value to ensure main menu is displayed until valid input given
-   
+
     bool exitProgram = false;
     displayMenu();
 
     while (!exitProgram)
     {
-         
+
         bool validOption = false;
         int optionNo = 0;
-        while(!validOption)
+        while (!validOption)
         {
             std::cout << "Please enter your choice: ";
             string input = readInput();
 
-            if (std::cin.eof()){
+            if (std::cin.eof())
+            {
                 std::cout << "\nCtrl-D was pressed, terminating program." << std::endl;
                 exitProgram = true;
                 validOption = true;
-
-            } else if (isNumber(input)){
+            }
+            else if (isNumber(input))
+            {
                 optionNo = std::stoi(input);
-                if (optionNo>0 && optionNo<10){
-                    validOption = true; 
-                }else {
+                if (optionNo > 0 && optionNo < 10)
+                {
+                    validOption = true;
+                }
+                else
+                {
                     printInvalidInput();
                 }
-                
-            }else if(input==""){
+            }
+            else if (input == "")
+            {
                 displayMenu();
-            } else {
+            }
+            else
+            {
                 printInvalidInput();
             }
         }
@@ -118,53 +125,71 @@ void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coi
     }
 }
 
-
-void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile, vector<Coin>& coins){
-    if (optionNo == 1){
-    // Display items 
-    list.print();
-    // no exiting program, thus re-displays main menu
-    } else if (optionNo == 2){// Purchase Item
-    
-    } else if (optionNo == 3){// Save and Exit
+void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile, vector<Coin> &coins)
+{
+    if (optionNo == 1)
+    {
+        // Display items
+        list.print();
+        // no exiting program, thus re-displays main menu
+    }
+    else if (optionNo == 2)
+    { // Purchase Item
+    }
+    else if (optionNo == 3)
+    { // Save and Exit
         saveAndExit(list, stockFile, coinFile);
         exitProgram = true; // only if method returns true tho
-    
-    } else if (optionNo == 4){// Add item
+    }
+    else if (optionNo == 4)
+    { // Add item
         getNewItem(list);
-    } else if (optionNo == 5){// Remove Item
+    }
+    else if (optionNo == 5)
+    { // Remove Item
         removeItem(list);
-    } else if (optionNo == 6){// Display Coins
-        displayCoins(coins);   
-    } else if (optionNo == 7){// Reset Stock
+    }
+    else if (optionNo == 6)
+    { // Display Coins
+        displayCoins(coins);
+    }
+    else if (optionNo == 7)
+    { // Reset Stock
         list.resetStock();
         std::cout << "\"All stock has been reset to " << DEFAULT_STOCK_LEVEL << "\"" << std::endl;
-    } else if (optionNo == 8){// Reset Coins
+    }
+    else if (optionNo == 8)
+    { // Reset Coins
         resetCoins(coins);
-    } else if (optionNo == 9){// Abort the Program
-        exitProgram = true; 
+    }
+    else if (optionNo == 9)
+    { // Abort the Program
+        exitProgram = true;
     }
 }
-
 
 void saveAndExit(LinkedList &list, string stockFile, string coinFile)
 {
     std::ofstream outputStockFile(stockFile, std::ofstream::out);
 
-    if (outputStockFile.is_open()) {
+    if (outputStockFile.is_open())
+    {
         std::vector<std::string> idList = list.idList;
-        for (const std::string& id : idList) {
+        for (const std::string &id : idList)
+        {
             outputStockFile << id << STOCK_DELIM;
             outputStockFile << list.getName(id) << STOCK_DELIM;
             outputStockFile << list.getDescription(id) << STOCK_DELIM;
             outputStockFile << list.getPrice(id).dollars << PRICE_DELIM;
-            outputStockFile << std::setfill('0') << std::setw(2)<< list.getPrice(id).cents << STOCK_DELIM;
+            outputStockFile << std::setfill('0') << std::setw(2) << list.getPrice(id).cents << STOCK_DELIM;
             outputStockFile << list.getStockLevels(id) << "\n";
         }
 
         outputStockFile.close();
         std::cout << "Stock File saved successfully." << std::endl;
-    } else {
+    }
+    else
+    {
         std::cout << "Error opening file." << std::endl;
     }
 }
@@ -233,11 +258,11 @@ bool readStockData(string fileName, char delim)
                 validData = false;
             }
             // checks that ID len , name len and Description len are the correct size:
-            if ( static_cast<int>(id.size()) != IDLEN || static_cast<int>(name.length()) > NAMELEN || static_cast<int>(description.length()) > DESCLEN){
+            if (static_cast<int>(id.size()) != IDLEN || static_cast<int>(name.length()) > NAMELEN || static_cast<int>(description.length()) > DESCLEN)
+            {
                 std::cout << "Invalid Price Data in Stock File: Check ID, name and description feilds are the correct size" << std::endl;
                 validData = false;
             }
-
         }
         else
         {
@@ -428,8 +453,88 @@ void displayMenu()
               << "Select your option (1-9): " << std::endl;
 }
 
-void makePurchase()
-{}
+bool makePurchase(vector<Coin> &coinVect, double itemPrice, LinkedList list)
+{
+    // Purchase Item
+    // get input
+    std::cout << "Purchase Item" << std::endl
+              << "-------------" << std::endl;
+
+    bool invalidItem = true;
+    while (invalidItem)
+    {
+        std::cout << "Please enter the id of the item you wish to purchase:";
+        string itemToPurchase = readInput();
+        // check the item does not exist
+        if (list.getName(itemToPurchase) == "Not Found")
+        {
+            std::cout << "The item id you entered could not be found\n"
+                      << std::endl;
+        }
+        else
+        {
+            // if there is no stock
+            if (list.getStockLevels(itemToPurchase) == 0)
+            {
+                std::cout << "There is no stock available, please select another item\n"
+                          << std::endl;
+            }
+            else
+            {
+                string itemName = list.getName(itemToPurchase);
+                std::cout << "You have selected " << itemName
+                          << " - " << list.getDescription(itemToPurchase)
+                          << ". This will cost you $ ";
+                list.getPrice(itemToPurchase).print();
+                std::cout << std::endl;
+                std::cout << "printing total" << std::endl;
+                std::cout << list.getPrice(itemToPurchase).getTotal() << std::endl;
+                // makePurchase(coins, list.getPrice(itemToPurchase).getTotal());
+                invalidItem = false;
+            }
+        }
+    }
+    std::set<int> expectedSet = {5, 10, 20, 50, 100, 200, 500, 1000};
+    bool validPurchase = false;
+    int totalInserted = 0;
+    // something to keep track of user input
+
+    while (totalInserted < itemPrice)
+    {
+        std::cout << "Please hand over the money - type in the value of each note//coin in cents." << std::endl;
+        string currentCoin = readInput();
+        if (isNumber(currentCoin))
+        {
+            int currCoin = stoi(currentCoin);
+            if (expectedSet.count(currCoin))
+            {
+            }
+            else
+            {
+                std::cout << "Error: $" << currentCoin
+                          << " is not a valid denomination of money. Please try again."
+                          << std::endl;
+            }
+        }
+        totalInserted = itemPrice;
+    }
+
+    // return true if purchase can be completed
+    for (int i = coinVect.size() - 1; i >= 0; i--)
+    {
+        std::cout << (coinVect[i].denom) << std::endl;
+    }
+    return validPurchase;
+
+    // get user money
+    // check here if we have enough change
+    // if we do then process transaction by
+    // updating stock
+    // updating money
+    // printing change given
+    // invalidItem = false;
+}
+
 /*credit: A1 source code helper.cpp file*/
 string readInput()
 {
@@ -445,20 +550,20 @@ bool isNumber(string s)
     string::const_iterator it = s.begin();
     char dot = '.';
     int nb_dots = 0;
-    while (it != s.end()) 
+    while (it != s.end())
     {
         if (*it == dot)
         {
             nb_dots++;
-            if (nb_dots>1)
+            if (nb_dots > 1)
             {
                 break;
             }
-        }   
+        }
         else if (!isdigit(*it))
         {
             break;
-        } 
+        }
 
         ++it;
     }
@@ -468,131 +573,167 @@ bool isNumber(string s)
 /*prints Invalid input*/
 void printInvalidInput()
 {
-    std::cout << "Invalid input.\n" << std::endl;
+    std::cout << "Invalid input.\n"
+              << std::endl;
 }
 
-std::string generateId(const std::vector<std::string>& idList){
+std::string generateId(const std::vector<std::string> &idList)
+{
     int maxID = -1;
 
-    for(const std::string& id : idList){
+    for (const std::string &id : idList)
+    {
         int idNum = std::stoi(id.substr(1));
-        if(idNum > maxID){
+        if (idNum > maxID)
+        {
             maxID = idNum;
         }
     }
 
     std::ostringstream newId;
     newId << "I" << std::setfill('0') << std::setw(4) << (maxID + 1);
-    
+
     return newId.str();
 }
 
-void printDebug(){
+void printDebug()
+{
     std::cout << "IM WORKING" << std::endl;
 }
 
-
-void getNewItem(LinkedList &list){
+void getNewItem(LinkedList &list)
+{
     bool itemAdded = false;
     std::string name = "";
     std::string description = "";
     std::string id = generateId(list.idList);
     std::cout << "The id of the new stock will be: " << id << std::endl;
     std::cout << "Please enter the name of the item: ";
-    while(!itemAdded){
+    while (!itemAdded)
+    {
 
-
-        if(name != "" && description != ""){
+        if (name != "" && description != "")
+        {
             unsigned int cents;
             unsigned int dollars;
             bool keyboardInterupt = getPrice(dollars, cents);
             Price price = {dollars, cents};
-            if(!keyboardInterupt){
+            if (!keyboardInterupt)
+            {
                 Stock newStock = {id, name, description, price, DEFAULT_STOCK_LEVEL};
                 list.add(newStock);
-                std::cout<< "This Item \"" << name << " - " << description << "\" has now been added to the menu" <<std::endl;
+                std::cout << "This Item \"" << name << " - " << description << "\" has now been added to the menu" << std::endl;
             }
-            itemAdded = true;      
-        }else{
+            itemAdded = true;
+        }
+        else
+        {
             std::string input = readInput();
 
-            if(input == ""){
+            if (input == "")
+            {
                 std::cout << "Item not added. Returning to main menu." << std::endl;
                 itemAdded = true;
-            }else if(name==""){
-                if(input.size() <= NAMELEN){
-                    if (!name.empty() && std::islower(name[0])) {
-                    name[0] = std::toupper(name[0]);
+            }
+            else if (name == "")
+            {
+                if (input.size() <= NAMELEN)
+                {
+                    if (!name.empty() && std::islower(name[0]))
+                    {
+                        name[0] = std::toupper(name[0]);
                     }
                     name = input;
                     std::cout << "Please enter the description of the item: ";
-                }else{
+                }
+                else
+                {
                     std::cout << "Name too long. Please enter a name less than " << NAMELEN << " characters long: ";
                 }
-            }else if(description==""){
-                if(input.size() <= DESCLEN){
+            }
+            else if (description == "")
+            {
+                if (input.size() <= DESCLEN)
+                {
                     description = input;
                     std::cout << "Please enter the price of the item: ";
-                }else{
+                }
+                else
+                {
                     std::cout << "Description too long. Please enter a description less than " << DESCLEN << " characters long: ";
                 }
-
             }
         }
     }
 }
 
-bool getPrice(unsigned int& x, unsigned int& y) {
+bool getPrice(unsigned int &x, unsigned int &y)
+{
     bool gotPrice = false;
     double input;
     bool interupt = false;
 
-    while (!gotPrice) {
+    while (!gotPrice)
+    {
         std::string inputStr = readInput();
         size_t decimalPos = inputStr.find('.');
-        if ((decimalPos != std::string::npos && (inputStr.length() - decimalPos == 3 || inputStr.length() - decimalPos == 2))|| isNumber(inputStr)) {
-            if (inputStr.length() - decimalPos == 2 && !isNumber(inputStr)) {
+        if ((decimalPos != std::string::npos && (inputStr.length() - decimalPos == 3 || inputStr.length() - decimalPos == 2)) || isNumber(inputStr))
+        {
+            if (inputStr.length() - decimalPos == 2 && !isNumber(inputStr))
+            {
                 inputStr += "0";
             }
 
-            try {
+            try
+            {
                 input = std::stod(inputStr);
                 x = static_cast<unsigned int>(input);
                 y = static_cast<unsigned int>(round((input - x) * 100));
 
-                if (y % 5 != 0) {
+                if (y % 5 != 0)
+                {
                     throw std::invalid_argument("Invalid input. Please enter a valid price:");
                 }
 
                 gotPrice = true;
-
-            } catch (const std::invalid_argument& e) {
-                std::cerr << "Invalid input. Please enter a valid price:";
-            } catch (const std::out_of_range& e) {
+            }
+            catch (const std::invalid_argument &e)
+            {
                 std::cerr << "Invalid input. Please enter a valid price:";
             }
-        }else if(inputStr == "") {
+            catch (const std::out_of_range &e)
+            {
+                std::cerr << "Invalid input. Please enter a valid price:";
+            }
+        }
+        else if (inputStr == "")
+        {
             std::cout << "Item not added. Returning to main menu." << std::endl;
             interupt = true;
             gotPrice = true;
         }
-         else {
+        else
+        {
             std::cerr << "Invalid input. Please enter a number with exactly two digits after the decimal point:";
         }
     }
     return interupt;
 }
 
-void removeItem(LinkedList &list){
+void removeItem(LinkedList &list)
+{
     std::cout << "Enter the item id of the item to remove from the menu: ";
     std::string id = readInput();
     std::string name = list.getName(id);
     std::string description = list.getDescription(id);
-    
-    if(name != "Not Found"){
-        std::cout <<"\""<< id << " - " << name << " - " << description << "\" has been removed from the system."<< std::endl;
+
+    if (name != "Not Found")
+    {
+        std::cout << "\"" << id << " - " << name << " - " << description << "\" has been removed from the system." << std::endl;
         list.remove(id);
-    } else {
+    }
+    else
+    {
         std::cout << "Item not found." << std::endl;
     }
 }
@@ -603,7 +744,8 @@ void removeItem(LinkedList &list){
 #include <iostream>
 #include "Coin.h"
 
-void displayCoins(std::vector<Coin> &coins) {
+void displayCoins(std::vector<Coin> &coins)
+{
     std::cout << "Coins Summary" << std::endl;
     std::cout << "-------------" << std::endl;
     std::cout << "Denomination    |    Count" << std::endl;
@@ -619,33 +761,34 @@ void displayCoins(std::vector<Coin> &coins) {
         "1 Dollar",
         "2 Dollars",
         "5 Dollars",
-        "10 Dollars"
-    };
+        "10 Dollars"};
 
-    for (Coin coin : coins) {
+    for (Coin coin : coins)
+    {
         std::ostringstream denom;
         denom << denomStrings[coin.denom];
 
-        if (coin.denom != ONE_DOLLAR && coin.denom != FIVE_DOLLARS) {
+        if (coin.denom != ONE_DOLLAR && coin.denom != FIVE_DOLLARS)
+        {
             denom << " ";
         }
 
         denominations.push_back(denom.str());
     }
 
-    for (int i = 0; i < denominations.size(); i++) {
+    for (int i = 0; i < denominations.size(); i++)
+    {
         std::cout << std::left << std::setw(15) << denominations[i] << " |" << std::right << std::setw(10) << coins[i].count << std::endl;
     }
-
-    
 
     std::cout << "---------------------------" << std::endl;
 }
 
-void resetCoins(std::vector<Coin> &coins){
-    for (int i = 0; i < coins.size(); i++) {
+void resetCoins(std::vector<Coin> &coins)
+{
+    for (int i = 0; i < coins.size(); i++)
+    {
         coins[i].count = DEFAULT_COIN_COUNT;
     }
-    std::cout << "\"All coins have been reset to the default level of "<< DEFAULT_COIN_COUNT << "\"" << std::endl;
+    std::cout << "\"All coins have been reset to the default level of " << DEFAULT_COIN_COUNT << "\"" << std::endl;
 }
-
