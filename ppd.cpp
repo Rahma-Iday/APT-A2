@@ -724,7 +724,7 @@ bool isNumber(string s)
 void printInvalidInput()
 {
     std::cout << "Invalid input.\n"
-              << std::endl;
+    << std::endl;
 }
 
 std::string generateId(const std::vector<std::string> &idList)
