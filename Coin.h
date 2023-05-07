@@ -24,6 +24,7 @@ public:
     unsigned count;
     // value in dollars
     double getDollarValue();
+    void print();
 };
 
 #endif // COIN_H
