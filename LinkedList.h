@@ -3,7 +3,6 @@
 #include "Node.h"
 #include <vector>
 
-
 class LinkedList
 {
 public:
@@ -16,27 +15,22 @@ public:
     void remove(std::string id);
     void print();
     unsigned int getListLength();
-    unsigned int  getStockLevels(std::string id);
+    unsigned int getStockLevels(std::string id);
     std::string getName(std::string id);
     std::string getDescription(std::string id);
     Price getPrice(std::string id);
     void resetStock();
     void buy(std::string id);
     void deleteList();
-    
+    void decrementStock(std::string id);
     void printIdList();
-
-
 
 private:
     // the beginning of the list
-    Node* head;
-  
+    Node *head;
+
     // how many nodes are there in the list?
     unsigned listLength;
-    
 };
 
-#endif  // LINKEDLIST_H
-
-
+#endif // LINKEDLIST_H
