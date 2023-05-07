@@ -576,7 +576,7 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                                   << ": ";
                         processMoney(changeRequired, coinVect, userCoins);
                         // update stock
-                        
+                        list.buy(itemToPurchase);
                     }
                     else
                     {
