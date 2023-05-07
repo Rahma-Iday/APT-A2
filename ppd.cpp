@@ -506,7 +506,7 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                 vector<Coin> userCoins;
                 int enum_count = 0;
 
-                while (enum_count < coinVect.size())
+                while (enum_count < static_cast<int>(coinVect.size()))
                 {
                     std::string denomString, countString;
                     Coin coin;
@@ -629,8 +629,8 @@ bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &user
 
     for (int i = coins.size() - 1; i >= 0; i--)
     {
-        int coinsUsed = 0;
-        int userCoinsUsed = 0;
+        unsigned int coinsUsed = 0;
+        unsigned int userCoinsUsed = 0;
         while (changeToGive + epsilon <= changeRequired && coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon))
         {
 
@@ -689,7 +689,7 @@ void printAllCoins(vector<Coin> &coins)
     {
         if (coins[i].count > 0)
         {
-            for (int j = 0; j < coins[i].count; j++)
+            for (unsigned int j = 0; j < coins[i].count; j++)
             {
                 coins[i].print();
                 std::cout << " ";
@@ -940,7 +940,7 @@ void displayCoins(std::vector<Coin> &coins)
         denominations.push_back(denom.str());
     }
 
-    for (int i = 0; i < denominations.size(); i++)
+    for (int i = 0; i < static_cast<int>(denominations.size()); i++)
     {
         std::cout << std::left << std::setfill(' ') << std::setw(15)
                   << denominations[i] << " |"
@@ -952,7 +952,7 @@ void displayCoins(std::vector<Coin> &coins)
 
 void resetCoins(std::vector<Coin> &coins)
 {
-    for (int i = 0; i < coins.size(); i++)
+    for (int i = 0; i < static_cast<int>(coins.size()); i++)
     {
         coins[i].count = DEFAULT_COIN_COUNT;
     }
