@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <limits>
 using std::string;
 using std::vector;
 
@@ -476,6 +477,18 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
         {
             std::cout << "The item id you entered could not be found\n"
                       << std::endl;
+        }
+        else if (std::cin.eof() || std::cin.fail())
+        {
+            // re-open closed cin
+            std::cout << "Exiting!" << std::endl;
+
+            std::cin.clear();
+            std::cin.rdbuf(std::cin.rdbuf()); // This line reopens the cin stream
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            // exit , pressed ctrl-d
+            std::cout << "Exiting!" << std::flush;
+            invalidItem = false;
         }
         else if (itemToPurchase == "")
         {
