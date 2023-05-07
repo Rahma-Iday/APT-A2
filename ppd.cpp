@@ -481,8 +481,6 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
         else if (std::cin.eof() || std::cin.fail())
         {
             // re-open closed cin
-            std::cout << "Exiting!" << std::endl;
-
             std::cin.clear();
             std::cin.rdbuf(std::cin.rdbuf()); // This line reopens the cin stream
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
