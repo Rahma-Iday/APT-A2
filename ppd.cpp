@@ -478,7 +478,7 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
             std::cout << "The item id you entered could not be found\n"
                       << std::endl;
         }
-        else if (std::cin.eof() || std::cin.fail())
+        else if (std::cin.eof())
         {
             // re-open closed cin
             std::cin.clear();
