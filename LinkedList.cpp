@@ -193,11 +193,6 @@ void LinkedList::buy(std::string id)
             if (temp->data->on_hand > 0)
             {
                 temp->data->on_hand--;
-                std::cout << "You have purchased " << temp->data->name << std::endl;
-            }
-            else
-            {
-                std::cout << "Sorry, " << temp->data->name << " is out of stock" << std::endl;
             }
         }
         temp = temp->next;
