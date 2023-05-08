@@ -599,16 +599,20 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                     {
                         std::cout << "Error: you did not enter a valid integer. Please try again." << std::endl;
                     }
-                    enoughInserted = totalInserted > itemPrice;
+                    enoughInserted = totalInserted >= itemPrice;
                 }
                 if (enoughInserted && itemPrice != 0) // transaction is to be processed
                 {
                     // first do we have enough change?
                     // then calculte change
                     double changeRequired = std::round((totalInserted - itemPrice) * 100) / 100.0; // round to 2dp
-                    if (changeRequired == 0.0)                                                     // no change required
+                    if (changeRequired == 0.00)                                                    // no change required
                     {
-                        std::cout << "No change given, enjoy!" << std::endl;
+                        std::cout << "No change given, enjoy your " << itemName << std::endl;
+                        processMoney(changeRequired, coinVect, userCoins);
+                        // update stock
+                        list.buy(itemToPurchase);
+                        std::cout << "\nPlease come again." << std::endl;
                     }
                     else if (enoughChange(changeRequired, coinVect, userCoins)) // enough change
                     {
@@ -655,7 +659,6 @@ bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &user
         {
             if (coins[i].count >= 1 && coins[i].count > coinsUsed)
             {
-
                 changeToGive += coins[i].getDollarValue();
                 coinsUsed++;
             }
@@ -668,6 +671,7 @@ bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &user
             {
                 continueOnSameCoin = false;
             }
+            continueOnSameCoin = (changeToGive + epsilon) <= changeRequired && coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon);
         }
     }
 
@@ -679,14 +683,15 @@ Processes the transaction and updates coins
 */
 void processMoney(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins)
 {
-    double changeToGive = 0;
+    double changeToGive = 0; // from vending machine to user
     double epsilon = 0.0001; // set a small epsilon value
 
     for (int i = static_cast<int>(coins.size()) - 1; i >= 0; i--)
     {
-        bool continueOnSameCoin = changeToGive + epsilon <= changeRequired && coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon);
+        bool coinLessThanChangeNeeded = coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon);
+        bool changeCalculatedLessThanRequred = changeToGive + epsilon <= changeRequired;
 
-        while (continueOnSameCoin)
+        while (changeCalculatedLessThanRequred && coinLessThanChangeNeeded)
         {
             if (coins[i].count >= 1)
             {
@@ -704,8 +709,10 @@ void processMoney(double changeRequired, vector<Coin> &coins, vector<Coin> &user
             }
             else
             {
-                continueOnSameCoin = false;
+                coinLessThanChangeNeeded = false;
             }
+            coinLessThanChangeNeeded = coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon);
+            changeCalculatedLessThanRequred = changeToGive + epsilon <= changeRequired;
         }
     }
 
