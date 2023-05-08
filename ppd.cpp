@@ -491,6 +491,7 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
         else if (itemToPurchase == "")
         {
             // exit don't want to purchase
+            std::cout << "The task Purchase Item failed to run successfully." << std::endl;
         }
         else
         {
@@ -557,7 +558,7 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                                       << std::endl;
                         }
                     }
-                    else if (currentCoin == "") // exit transaction and cancel
+                    else if (currentCoin == "")
                     {
                         // exit this we don't want to process transaction anymore
                         // make itemPrice = 0 and then exit loop
@@ -572,12 +573,12 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                 {
                     // first do we have enough change?
                     // then calculte change
-                    double changeRequired = std::round((totalInserted - itemPrice) * 100) / 100.0;// round to 2dp
-                    if (changeRequired == 0.0)// no change required
+                    double changeRequired = std::round((totalInserted - itemPrice) * 100) / 100.0; // round to 2dp
+                    if (changeRequired == 0.0)                                                     // no change required
                     {
                         std::cout << "No change given, enjoy!" << std::endl;
                     }
-                    else if (enoughChange(changeRequired, coinVect, userCoins))// enough change
+                    else if (enoughChange(changeRequired, coinVect, userCoins)) // enough change
                     {
                         std::cout << "Here is your "
                                   << itemName
@@ -598,15 +599,39 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                     }
                 }
                 invalidItem = false;
-                // delete userCoin vector here
             }
         }
     }
+    // if we do then process transaction by
+    // updating stock
+    // updating money
+    // printing change given
 }
+// bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins)
+// {
+//     double changeToGive = 0;
 
-/**
- * Check coin vector and userCoin vector for enough change to be given
- **/
+//     for (int i = coins.size() - 1; i >= 0; i--)
+//     {
+//         int coinsGiven = 0;
+//         int userCoinsGiven = 0;
+//         while (changeToGive <= changeRequired && (coins[i].getDollarValue() <= (double)(changeRequired - changeToGive)))
+//         {
+//             coins[i].print();
+//             if (coins[i].count >= 1 && coinsGiven < coins[i].count)
+//             {
+//                 changeToGive += coins[i].getDollarValue();
+//             }
+//             else if (userCoins[i].count >= 1 && userCoinsGiven < userCoins[i].count)
+//             {
+//                 changeToGive += userCoins[i].getDollarValue();
+//             }
+//         }
+//         std::cout << std::endl;
+//     }
+
+//     return changeToGive == changeRequired;
+// }
 bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins)
 {
     double changeToGive = 0;
@@ -634,9 +659,7 @@ bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &user
 
     return abs(changeToGive - changeRequired) < epsilon;
 }
-/**
- * Process transaction and update coin vector
- **/
+
 void processMoney(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins)
 {
     double changeToGive = 0;
