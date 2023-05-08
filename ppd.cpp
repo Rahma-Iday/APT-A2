@@ -26,7 +26,7 @@ void printDebug();
 void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coin> &coins);
 void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile, vector<Coin> &coins);
 void removeItem(LinkedList &list);
-void saveAndExit(LinkedList &list, string stockFile, string coinFile);
+void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFile, string coinFile);
 void displayCoins(std::vector<Coin> &coins);
 void resetCoins(std::vector<Coin> &coins);
 void makePurchase(vector<Coin> &coinVect, LinkedList &list);
@@ -143,7 +143,7 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
     }
     else if (optionNo == 3)
     { // Save and Exit
-        saveAndExit(list, stockFile, coinFile);
+        saveAndExit(list, coins, stockFile, coinFile);
         exitProgram = true; // only if method returns true tho
     }
     else if (optionNo == 4)
@@ -173,7 +173,7 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
     }
 }
 
-void saveAndExit(LinkedList &list, string stockFile, string coinFile)
+void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFile, string coinFile)
 {
     std::ofstream outputStockFile(stockFile, std::ofstream::out);
 
@@ -196,6 +196,18 @@ void saveAndExit(LinkedList &list, string stockFile, string coinFile)
     else
     {
         std::cout << "Error opening file." << std::endl;
+    }
+
+    std::ofstream outputCoinFile(coinFile, std::ofstream::out);
+
+    if (outputCoinFile.is_open())
+    {
+        for (int i=0; i<static_cast<int>(coins.size()); i++)
+        {
+            outputCoinFile << coins[i].denom << DELIM;
+            outputCoinFile << coins[i].count << "\n";
+        }
+
     }
 }
 
@@ -379,9 +391,10 @@ vector<Stock> loadStockData(string fileName, char delim)
 
     // sorts vector alphaetically by name, using lambda function
     std::sort(stocks.begin(), stocks.end(), [](const Stock &a, const Stock &b)
-              {
+        {
         //compares the strings lexicographically aka alphabetically
-        return a.name < b.name; });
+        return a.name < b.name; 
+        });
 
     return stocks;
 }
@@ -391,20 +404,31 @@ vector<Coin> loadCoinData(string fileName, char delim)
     vector<Coin> coins;
     std::ifstream file(fileName);
     std::string line;
-    int enum_count = 0;
+    std::vector<int> expectedValues = {5, 10, 20, 50, 100, 200, 500, 1000};
+    int denomIndex = 0;
 
     while (std::getline(file, line))
     {
         std::stringstream linestream(line);
         std::string denomString, countString;
+        int denom = 0;
 
         Coin coin;
 
         std::getline(linestream, denomString, delim);
         std::getline(linestream, countString);
+    
+        
+        denom = std::stoul(denomString);
+        for (int i=0; i<static_cast<int>(expectedValues.size()); i++)
+        {
+            if ( expectedValues[i] == denom )
+            {
+                denomIndex = i;
+            }
+        }
 
-        coin.denom = static_cast<Denomination>(enum_count);
-        enum_count++;
+        coin.denom = static_cast<Denomination>(denomIndex);
         coin.count = std::stoul(countString);
 
         coins.push_back(coin);
@@ -745,7 +769,7 @@ bool isNumber(string s)
 void printInvalidInput()
 {
     std::cout << "Invalid input.\n"
-              << std::endl;
+    << std::endl;
 }
 
 std::string generateId(const std::vector<std::string> &idList)
