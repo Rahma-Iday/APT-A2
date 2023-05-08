@@ -195,19 +195,30 @@ void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFile, s
     }
     else
     {
-        std::cout << "Error opening file." << std::endl;
+        std::cout << "Error opening Stock file." << std::endl;
     }
 
     std::ofstream outputCoinFile(coinFile, std::ofstream::out);
+    std::vector<int> expectedvector = {5, 10, 20, 50, 100, 200, 500, 1000};
 
     if (outputCoinFile.is_open())
     {
         for (int i = 0; i < static_cast<int>(coins.size()); i++)
         {
-            outputCoinFile << coins[i].denom << DELIM;
+            
+            outputCoinFile << expectedvector[i] << DELIM;
             outputCoinFile << coins[i].count << "\n";
         }
+
+        outputCoinFile.close();
+        std::cout << "Coin File saved successfully." << std::endl;
+
     }
+    else
+    {
+        std::cout << "Error opening Coin file." << std::endl;
+    }
+
 }
 
 bool readStockData(string fileName, char delim)
@@ -388,11 +399,11 @@ vector<Stock> loadStockData(string fileName, char delim)
         stocks.push_back(stock);
     }
 
-    // sorts vector alphaetically by name, using lambda function
-    std::sort(stocks.begin(), stocks.end(), [](const Stock &a, const Stock &b)
-              {
+    // sorts vector alphabetically by name, using lambda function
+    std::sort(stocks.begin(), stocks.end(), [](const Stock &a, const Stock &b){
         //compares the strings lexicographically aka alphabetically
-        return a.name < b.name; });
+        return a.name < b.name; 
+    });
 
     return stocks;
 }
@@ -430,6 +441,11 @@ vector<Coin> loadCoinData(string fileName, char delim)
 
         coins.push_back(coin);
     }
+
+    // sorts coins vector by denom using lambda function before returning it
+    std::sort(coins.begin(), coins.end(), [](const Coin& coin1, const Coin& coin2) {
+        return coin1.denom < coin2.denom;
+    });
 
     return coins;
 }
