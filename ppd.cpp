@@ -641,9 +641,9 @@ bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &user
     {
         unsigned int coinsUsed = 0;
         unsigned int userCoinsUsed = 0;
-        while (changeToGive + epsilon <= changeRequired && coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon))
+        bool continueOnSameCoin = (changeToGive + epsilon) <= changeRequired && coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon);
+        while (continueOnSameCoin)
         {
-
             if (coins[i].count >= 1 && coins[i].count > coinsUsed)
             {
                 changeToGive += coins[i].getDollarValue();
@@ -653,6 +653,10 @@ bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &user
             {
                 changeToGive += userCoins[i].getDollarValue();
                 userCoinsUsed++;
+            }
+            else
+            {
+                continueOnSameCoin = false;
             }
         }
     }
