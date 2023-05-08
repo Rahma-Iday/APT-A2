@@ -567,6 +567,10 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                         printAllCoins(userCoins);
                         // delete user coins
                     }
+                    else
+                    {
+                        std::cout << "Error: you did not enter a valid integer. Please try again." << std::endl;
+                    }
                     enoughInserted = totalInserted > itemPrice;
                 }
                 if (enoughInserted && itemPrice != 0) // transaction is to be processed
@@ -602,36 +606,11 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
             }
         }
     }
-    // if we do then process transaction by
-    // updating stock
-    // updating money
-    // printing change given
 }
-// bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins)
-// {
-//     double changeToGive = 0;
 
-//     for (int i = coins.size() - 1; i >= 0; i--)
-//     {
-//         int coinsGiven = 0;
-//         int userCoinsGiven = 0;
-//         while (changeToGive <= changeRequired && (coins[i].getDollarValue() <= (double)(changeRequired - changeToGive)))
-//         {
-//             coins[i].print();
-//             if (coins[i].count >= 1 && coinsGiven < coins[i].count)
-//             {
-//                 changeToGive += coins[i].getDollarValue();
-//             }
-//             else if (userCoins[i].count >= 1 && userCoinsGiven < userCoins[i].count)
-//             {
-//                 changeToGive += userCoins[i].getDollarValue();
-//             }
-//         }
-//         std::cout << std::endl;
-//     }
-
-//     return changeToGive == changeRequired;
-// }
+/*
+Checks we have enough change in the coins list
+*/
 bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins)
 {
     double changeToGive = 0;
@@ -664,6 +643,9 @@ bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &user
     return abs(changeToGive - changeRequired) < epsilon;
 }
 
+/*
+Processes the transaction and updates coins
+*/
 void processMoney(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins)
 {
     double changeToGive = 0;
