@@ -202,12 +202,11 @@ void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFile, s
 
     if (outputCoinFile.is_open())
     {
-        for (int i=0; i<static_cast<int>(coins.size()); i++)
+        for (int i = 0; i < static_cast<int>(coins.size()); i++)
         {
             outputCoinFile << coins[i].denom << DELIM;
             outputCoinFile << coins[i].count << "\n";
         }
-
     }
 }
 
@@ -391,10 +390,9 @@ vector<Stock> loadStockData(string fileName, char delim)
 
     // sorts vector alphaetically by name, using lambda function
     std::sort(stocks.begin(), stocks.end(), [](const Stock &a, const Stock &b)
-        {
+              {
         //compares the strings lexicographically aka alphabetically
-        return a.name < b.name; 
-        });
+        return a.name < b.name; });
 
     return stocks;
 }
@@ -417,12 +415,11 @@ vector<Coin> loadCoinData(string fileName, char delim)
 
         std::getline(linestream, denomString, delim);
         std::getline(linestream, countString);
-    
-        
+
         denom = std::stoul(denomString);
-        for (int i=0; i<static_cast<int>(expectedValues.size()); i++)
+        for (int i = 0; i < static_cast<int>(expectedValues.size()); i++)
         {
-            if ( expectedValues[i] == denom )
+            if (expectedValues[i] == denom)
             {
                 denomIndex = i;
             }
@@ -636,8 +633,10 @@ bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &user
     double changeToGive = 0;
     double epsilon = 0.0001; // set a small epsilon value
 
-    for (int i = coins.size() - 1; i >= 0; i--)
+    for (int i = 0; i < static_cast<int>(coins.size()); i++)
     {
+        coins[i].print();
+        std::cout << std::endl;
         unsigned int coinsUsed = 0;
         unsigned int userCoinsUsed = 0;
         bool continueOnSameCoin = (changeToGive + epsilon) <= changeRequired && coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon);
@@ -645,13 +644,18 @@ bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &user
         {
             if (coins[i].count >= 1 && coins[i].count > coinsUsed)
             {
+
                 changeToGive += coins[i].getDollarValue();
                 coinsUsed++;
+                std::cout << "coins used: " << coinsUsed << std::endl;
+                std::cout << "coins avail: " << coins[i].count << std::endl;
             }
             else if (userCoins[i].count >= 1 && userCoins[i].count > userCoinsUsed)
             {
                 changeToGive += userCoins[i].getDollarValue();
                 userCoinsUsed++;
+                std::cout << "user coins used: " << userCoinsUsed << std::endl;
+                std::cout << "user coins avail: " << userCoins[i].count << std::endl;
             }
             else
             {
@@ -671,7 +675,7 @@ void processMoney(double changeRequired, vector<Coin> &coins, vector<Coin> &user
     double changeToGive = 0;
     double epsilon = 0.0001; // set a small epsilon value
 
-    for (int i = coins.size() - 1; i >= 0; i--)
+    for (int i = 0; static_cast<int>(coins.size()); i--)
     {
 
         while (changeToGive + epsilon <= changeRequired && coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon))
@@ -738,7 +742,6 @@ string readInput()
     return result;
 }
 
-
 /*credit: A1 source code helper.cpp file*/
 bool isNumber(string s)
 {
@@ -769,7 +772,7 @@ bool isNumber(string s)
 void printInvalidInput()
 {
     std::cout << "Invalid input.\n"
-    << std::endl;
+              << std::endl;
 }
 
 std::string generateId(const std::vector<std::string> &idList)
