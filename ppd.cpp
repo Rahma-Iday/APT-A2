@@ -249,7 +249,7 @@ void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFile, s
     {
         std::cout << "Error opening Coin file." << std::endl;
     }
-    
+
 }
 
 bool readStockData(string fileName, char delim)
@@ -431,11 +431,10 @@ vector<Stock> loadStockData(string fileName, char delim)
     }
 
     // sorts vector alphaetically by name, using lambda function
-    std::sort(stocks.begin(), stocks.end(), [](const Stock &a, const Stock &b)
-        {
+    std::sort(stocks.begin(), stocks.end(), [](const Stock &a, const Stock &b){
         //compares the strings lexicographically aka alphabetically
         return a.name < b.name; 
-        });
+    });
 
     return stocks;
 }
@@ -474,6 +473,11 @@ vector<Coin> loadCoinData(string fileName, char delim)
 
         coins.push_back(coin);
     }
+
+    // sorts coins vector by denom using lambda function before returning it
+    std::sort(coins.begin(), coins.end(), [](const Coin& coin1, const Coin& coin2) {
+        return coin1.denom < coin2.denom;
+    });
 
     return coins;
 }
