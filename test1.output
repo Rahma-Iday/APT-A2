@@ -1,0 +1,163 @@
+Main Menu:
+        1. Display Items
+        2. Purchase Item
+        3. Save and Exit
+Administrator-Only Menu:
+        4. Add Item
+        5. Remove Item
+        6. Display Coins
+        7. Reset Stock
+        8. Reset Coins
+        9. Abort Program
+
+Select your option (1-9): 
+Items Menu
+----------
+ID   |Name                                    | Available | Price
+-------------------------------------------------------------------
+I0002|Apple Pie                               |20         |$ 3.00
+I0003|Lemon Cheesecake                        |20         |$ 4.00
+I0004|Lemon Meringue Pie                      |20         |$ 3.00
+I0005|Lemon Tart                              |20         |$ 3.75
+I0001|Meat Pie                                |20         |$ 3.50
+
+Main Menu:
+        1. Display Items
+        2. Purchase Item
+        3. Save and Exit
+Administrator-Only Menu:
+        4. Add Item
+        5. Remove Item
+        6. Display Coins
+        7. Reset Stock
+        8. Reset Coins
+        9. Abort Program
+
+Select your option (1-9): 
+Purchase Item
+-------------
+Please enter the id of the item you wish to purchase: 
+The item id you entered could not be found
+Please enter the id of the item you wish to purchase:
+The item id you entered could not be found
+Please enter the id of the item you wish to purchase: 
+The item id you entered could not be found
+Please enter the id of the item you wish to purchase: 
+The item id you entered could not be found
+Please enter the id of the item you wish to purchase: 
+The item id you entered could not be found
+Please enter the id of the item you wish to purchase: 
+The item id you entered could not be found
+Please enter the id of the item you wish to purchase: 
+You have selected "Lemon Cheesecake - A delicious, 1/8 size slice of cheesecake". This will cost you $ 4.00.
+Please hand over the money - type in the value of each note/coin in cents.
+Press enter or ctrl-d on a new line to cancel this purchase:
+You still need to give us $4.00: 
+Error: input was not a number. Please try again.
+Error: you did not enter a valid integer. Please try again.
+You still need to give us $4.00: 
+Error: $0.01 is not a valid denomination of money. Please try again.
+You still need to give us $4.00: 
+Error: input was not a number. Please try again.
+Error: you did not enter a valid integer. Please try again.
+You still need to give us $4.00: 
+Error: input was not a number. Please try again.
+Error: you did not enter a valid integer. Please try again.
+You still need to give us $4.00: 
+Error: input was not a number. Please try again.
+Error: you did not enter a valid integer. Please try again.
+You still need to give us $4.00: 
+Error: input was not a number. Please try again.
+Error: you did not enter a valid integer. Please try again.
+You still need to give us $4.00: 
+You still need to give us $3.00: 
+Error: input was not a number. Please try again.
+Error: you did not enter a valid integer. Please try again.
+You still need to give us $3.00: 
+Error: $7.00 is not a valid denomination of money. Please try again.
+You still need to give us $3.00: 
+Error: $20.00 is not a valid denomination of money. Please try again.
+You still need to give us $3.00: 
+Error: $-10.00 is not a valid denomination of money. Please try again.
+You still need to give us $3.00: 
+Error: $0.00 is not a valid denomination of money. Please try again.
+You still need to give us $3.00: 
+Error: $2.38 is not a valid denomination of money. Please try again.
+You still need to give us $3.00: 
+You still need to give us $2.50: 
+Error: $50.00 is not a valid denomination of money. Please try again.
+You still need to give us $2.50: 
+Here is your Lemon Cheesecake and your change of $ 2.50: $2 50c
+Please come again soon.
+Main Menu:
+        1. Display Items
+        2. Purchase Item
+        3. Save and Exit
+Administrator-Only Menu:
+        4. Add Item
+        5. Remove Item
+        6. Display Coins
+        7. Reset Stock
+        8. Reset Coins
+        9. Abort Program
+
+Select your option (1-9): 
+Purchase Item
+-------------
+Please enter the id of the item you wish to purchase: I0003
+You have selected "Lemon Cheesecake - A delicious, 1/8 size slice of cheesecake". This will cost you $ 4.00.
+Please hand over the money - type in the value of each note/coin in cents.
+Press enter or ctrl-d on a new line to cancel this purchase:
+You still need to give us $4.00:
+Change of mind - here is your change:
+
+Please come again soon.
+Main Menu:
+        1. Display Items
+        2. Purchase Item
+        3. Save and Exit
+Administrator-Only Menu:
+        4. Add Item
+        5. Remove Item
+        6. Display Coins
+        7. Reset Stock
+        8. Reset Coins
+        9. Abort Program
+
+Select your option (1-9): 
+Items Menu
+----------
+ID   |Name                                    | Available | Price
+-------------------------------------------------------------------
+I0002|Apple Pie                               |20         |$ 3.00
+I0003|Lemon Cheesecake                        |19         |$ 4.00
+I0004|Lemon Meringue Pie                      |20         |$ 3.00
+I0005|Lemon Tart                              |20         |$ 3.75
+I0001|Meat Pie                                |20         |$ 3.50
+
+Main Menu:
+        1. Display Items
+        2. Purchase Item
+        3. Save and Exit
+Administrator-Only Menu:
+        4. Add Item
+        5. Remove Item
+        6. Display Coins
+        7. Reset Stock
+        8. Reset Coins
+        9. Abort Program
+
+Select your option (1-9): 
+Coins Summary
+-------------
+Denomination    |    Count
+---------------------------
+5 Cents         |        20
+10 Cents        |        40
+20 Cents        |         3
+50 Cents        |         5
+1 Dollar        |        31
+2 Dollar        |        19
+5 Dollar        |         5
+10 Dollar       |         3
+Stock File saved successfully.
