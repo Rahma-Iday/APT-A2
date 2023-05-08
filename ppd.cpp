@@ -195,20 +195,61 @@ void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFile, s
     }
     else
     {
-        std::cout << "Error opening file." << std::endl;
+        std::cout << "Error opening Stock file." << std::endl;
     }
 
     std::ofstream outputCoinFile(coinFile, std::ofstream::out);
 
     if (outputCoinFile.is_open())
     {
+        int denomCents = 0;
+
         for (int i=0; i<static_cast<int>(coins.size()); i++)
         {
-            outputCoinFile << coins[i].denom << DELIM;
+            if (coins[i].denom == 0)
+            {
+                denomCents = 5;
+            }
+            else if (coins[i].denom == 1)
+            {
+                denomCents = 10;
+            }
+            else if (coins[i].denom == 2)
+            {
+                denomCents = 20;
+            }
+            else if (coins[i].denom == 3)
+            {
+                denomCents = 50;
+            }
+            else if (coins[i].denom == 4)
+            {
+                denomCents = 100;
+            }
+            else if (coins[i].denom == 5)
+            {
+                denomCents = 200;
+            }
+            else if (coins[i].denom == 6)
+            {
+                denomCents = 500;
+            }
+            else if (coins[i].denom == 7)
+            {
+                denomCents = 1000;
+            }
+
+            outputCoinFile << denomCents << DELIM;
             outputCoinFile << coins[i].count << "\n";
         }
-
+        outputCoinFile.close();
+        std::cout << "Coin File saved successfully." << std::endl;
     }
+    else
+    {
+        std::cout << "Error opening Coin file." << std::endl;
+    }
+    
 }
 
 bool readStockData(string fileName, char delim)
