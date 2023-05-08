@@ -205,20 +205,18 @@ void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFile, s
     {
         for (int i = 0; i < static_cast<int>(coins.size()); i++)
         {
-            
+
             outputCoinFile << expectedvector[i] << DELIM;
             outputCoinFile << coins[i].count << "\n";
         }
 
         outputCoinFile.close();
         std::cout << "Coin File saved successfully." << std::endl;
-
     }
     else
     {
         std::cout << "Error opening Coin file." << std::endl;
     }
-
 }
 
 bool readStockData(string fileName, char delim)
@@ -400,10 +398,10 @@ vector<Stock> loadStockData(string fileName, char delim)
     }
 
     // sorts vector alphabetically by name, using lambda function
-    std::sort(stocks.begin(), stocks.end(), [](const Stock &a, const Stock &b){
+    std::sort(stocks.begin(), stocks.end(), [](const Stock &a, const Stock &b)
+              {
         //compares the strings lexicographically aka alphabetically
-        return a.name < b.name; 
-    });
+        return a.name < b.name; });
 
     return stocks;
 }
@@ -443,9 +441,8 @@ vector<Coin> loadCoinData(string fileName, char delim)
     }
 
     // sorts coins vector by denom using lambda function before returning it
-    std::sort(coins.begin(), coins.end(), [](const Coin& coin1, const Coin& coin2) {
-        return coin1.denom < coin2.denom;
-    });
+    std::sort(coins.begin(), coins.end(), [](const Coin &coin1, const Coin &coin2)
+              { return coin1.denom < coin2.denom; });
 
     return coins;
 }
@@ -624,7 +621,7 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                         processMoney(changeRequired, coinVect, userCoins);
                         // update stock
                         list.buy(itemToPurchase);
-                        std::cout << "Please come again." << std::endl;
+                        std::cout << "\nPlease come again." << std::endl;
                     }
                     else
                     {
@@ -632,7 +629,7 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                         std::cout << "Sorry, we don't have sufficient funds to process your transaction" << std::endl;
                         std::cout << "Here is your refund: ";
                         printAllCoins(userCoins);
-                        std::cout << "Have a great day." << std::endl;
+                        std::cout << "\nHave a great day." << std::endl;
                     }
                 }
                 invalidItem = false;
@@ -649,10 +646,8 @@ bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &user
     double changeToGive = 0;
     double epsilon = 0.0001; // set a small epsilon value
 
-    for (int i = 0; i < static_cast<int>(coins.size()); i++)
+    for (int i = static_cast<int>(coins.size()) - 1; i >= 0; i--)
     {
-        coins[i].print();
-        std::cout << std::endl;
         unsigned int coinsUsed = 0;
         unsigned int userCoinsUsed = 0;
         bool continueOnSameCoin = (changeToGive + epsilon) <= changeRequired && coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon);
@@ -663,15 +658,11 @@ bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &user
 
                 changeToGive += coins[i].getDollarValue();
                 coinsUsed++;
-                std::cout << "coins used: " << coinsUsed << std::endl;
-                std::cout << "coins avail: " << coins[i].count << std::endl;
             }
             else if (userCoins[i].count >= 1 && userCoins[i].count > userCoinsUsed)
             {
                 changeToGive += userCoins[i].getDollarValue();
                 userCoinsUsed++;
-                std::cout << "user coins used: " << userCoinsUsed << std::endl;
-                std::cout << "user coins avail: " << userCoins[i].count << std::endl;
             }
             else
             {
@@ -691,23 +682,29 @@ void processMoney(double changeRequired, vector<Coin> &coins, vector<Coin> &user
     double changeToGive = 0;
     double epsilon = 0.0001; // set a small epsilon value
 
-    for (int i = 0; static_cast<int>(coins.size()); i--)
+    for (int i = static_cast<int>(coins.size()) - 1; i >= 0; i--)
     {
+        bool continueOnSameCoin = changeToGive + epsilon <= changeRequired && coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon);
 
-        while (changeToGive + epsilon <= changeRequired && coins[i].getDollarValue() <= (changeRequired - changeToGive + epsilon))
+        while (continueOnSameCoin)
         {
-            coins[i].print();
-            std::cout << " ";
-
             if (coins[i].count >= 1)
             {
                 changeToGive += coins[i].getDollarValue();
                 coins[i].count--;
+                coins[i].print();
+                std::cout << " ";
             }
             else if (userCoins[i].count >= 1)
             {
                 changeToGive += userCoins[i].getDollarValue();
                 userCoins[i].count--;
+                coins[i].print();
+                std::cout << " ";
+            }
+            else
+            {
+                continueOnSameCoin = false;
             }
         }
     }
