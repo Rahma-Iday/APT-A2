@@ -26,7 +26,7 @@ void printDebug();
 void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coin> &coins);
 void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile, vector<Coin> &coins);
 void removeItem(LinkedList &list);
-void saveAndExit(LinkedList &list, string stockFile, string coinFile);
+void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFile, string coinFile);
 void displayCoins(std::vector<Coin> &coins);
 void resetCoins(std::vector<Coin> &coins);
 void makePurchase(vector<Coin> &coinVect, LinkedList &list);
@@ -143,7 +143,7 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
     }
     else if (optionNo == 3)
     { // Save and Exit
-        saveAndExit(list, stockFile, coinFile);
+        saveAndExit(list, coins, stockFile, coinFile);
         exitProgram = true; // only if method returns true tho
     }
     else if (optionNo == 4)
@@ -173,7 +173,7 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
     }
 }
 
-void saveAndExit(LinkedList &list, string stockFile, string coinFile)
+void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFile, string coinFile)
 {
     std::ofstream outputStockFile(stockFile, std::ofstream::out);
 
@@ -196,6 +196,18 @@ void saveAndExit(LinkedList &list, string stockFile, string coinFile)
     else
     {
         std::cout << "Error opening file." << std::endl;
+    }
+
+    std::ofstream outputCoinFile(coinFile, std::ofstream::out);
+
+    if (outputCoinFile.is_open())
+    {
+        for (int i=0; i<static_cast<int>(coins.size()); i++)
+        {
+            outputCoinFile << coins[i].denom << DELIM;
+            outputCoinFile << coins[i].count << "\n";
+        }
+
     }
 }
 
