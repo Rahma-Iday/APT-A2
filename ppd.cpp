@@ -391,9 +391,10 @@ vector<Stock> loadStockData(string fileName, char delim)
 
     // sorts vector alphaetically by name, using lambda function
     std::sort(stocks.begin(), stocks.end(), [](const Stock &a, const Stock &b)
-              {
+        {
         //compares the strings lexicographically aka alphabetically
-        return a.name < b.name; });
+        return a.name < b.name; 
+        });
 
     return stocks;
 }
@@ -403,20 +404,31 @@ vector<Coin> loadCoinData(string fileName, char delim)
     vector<Coin> coins;
     std::ifstream file(fileName);
     std::string line;
-    int enum_count = 0;
+    std::vector<int> expectedValues = {5, 10, 20, 50, 100, 200, 500, 1000};
+    int denomIndex = 0;
 
     while (std::getline(file, line))
     {
         std::stringstream linestream(line);
         std::string denomString, countString;
+        int denom = 0;
 
         Coin coin;
 
         std::getline(linestream, denomString, delim);
         std::getline(linestream, countString);
+    
+        
+        denom = std::stoul(denomString);
+        for (int i=0; i<static_cast<int>(expectedValues.size()); i++)
+        {
+            if ( expectedValues[i] == denom )
+            {
+                denomIndex = i;
+            }
+        }
 
-        coin.denom = static_cast<Denomination>(enum_count);
-        enum_count++;
+        coin.denom = static_cast<Denomination>(denomIndex);
         coin.count = std::stoul(countString);
 
         coins.push_back(coin);
