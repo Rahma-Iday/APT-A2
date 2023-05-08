@@ -491,6 +491,7 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
         else if (itemToPurchase == "")
         {
             // exit don't want to purchase
+            std::cout << "The task Purchase Item failed to run successfully." << std::endl;
         }
         else
         {
@@ -572,12 +573,12 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                 {
                     // first do we have enough change?
                     // then calculte change
-                    double changeRequired = std::round((totalInserted - itemPrice) * 100) / 100.0;// round to 2dp
-                    if (changeRequired == 0.0)// no change required
+                    double changeRequired = std::round((totalInserted - itemPrice) * 100) / 100.0; // round to 2dp
+                    if (changeRequired == 0.0)                                                     // no change required
                     {
                         std::cout << "No change given, enjoy!" << std::endl;
                     }
-                    else if (enoughChange(changeRequired, coinVect, userCoins))// enough change
+                    else if (enoughChange(changeRequired, coinVect, userCoins)) // enough change
                     {
                         std::cout << "Here is your "
                                   << itemName
