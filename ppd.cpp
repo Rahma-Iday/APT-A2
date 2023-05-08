@@ -476,7 +476,7 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
         if (itemToPurchase.length() == 0)
         {
             // exit don't want to purchase
-            std::cout << "The task Purchase Item failed to run successfully." << std::endl;
+            std::cout << "\nThe task Purchase Item failed to run successfully." << std::endl;
             std::cout << "Please come again." << std::endl;
             invalidItem = false;
         }
