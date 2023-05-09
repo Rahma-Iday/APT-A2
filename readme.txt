@@ -15,10 +15,10 @@ All Tasks:
     REQ13: Return to Menu Functionality
     REQ14: Memory Leaks and Abuses
     REQ15: write test case (M1): GROUP
-        - check files exist (when files in same directory as ppd.ex)
+        - check files exist (when files in same directory as ppd.ex) DONE
         - check files exist (when files are in different directory) <- TODO
-        - stock.dat and coin.dat when less feilds are provided
-        - stock.dat and coin.dat when more number of feilds provided
+        - stock.dat and coin.dat when less feilds are provided DONE
+        - stock.dat and coin.dat when more number of feilds provided DONE
         - stock.dat when price doesnt have a "."
         - stock.dat when price(dollars) is string 
         - stock.dat when price(cents) is string 
