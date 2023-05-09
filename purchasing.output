@@ -186,4 +186,19 @@ Denomination    |    Count
 2 Dollar        |        19
 5 Dollar        |         5
 10 Dollar       |         3
+---------------------------
+Main Menu:
+        1. Display Items
+        2. Purchase Item
+        3. Save and Exit
+Administrator-Only Menu:
+        4. Add Item
+        5. Remove Item
+        6. Display Coins
+        7. Reset Stock
+        8. Reset Coins
+        9. Abort Program
+
+Select your option (1-9):
 Stock File saved successfully.
+Coin File saved successfully.
