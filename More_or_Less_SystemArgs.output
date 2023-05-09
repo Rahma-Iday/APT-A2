@@ -1,0 +1,2 @@
+Please make sure exactly 3 command line arguments are entered in the form:
+ ./ppd <stockfile> <coinsfile>
