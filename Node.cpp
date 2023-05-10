@@ -4,7 +4,7 @@
 
 Node::Node(Stock info)
 {
-    std::shared_ptr<Stock> data = std::make_shared<Stock>(info);
+    data = std::make_shared<Stock>(info);
     next = nullptr;
 };
 Node::~Node(){
