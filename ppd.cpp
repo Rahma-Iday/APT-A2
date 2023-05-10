@@ -179,8 +179,8 @@ void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFile, s
 
     if (outputStockFile.is_open())
     {
-        std::vector<std::string> idList = list.idList;
-        for (const std::string &id : idList)
+        
+        for (const std::string &id : list.idList)
         {
             outputStockFile << id << STOCK_DELIM;
             outputStockFile << list.getName(id) << STOCK_DELIM;
