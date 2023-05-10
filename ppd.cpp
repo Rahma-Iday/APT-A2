@@ -855,11 +855,11 @@ void getNewItem(LinkedList &list)
             }
             else if (name == "")
             {
-                if (input.size() <= NAMELEN)
+                if (input.size() <= NAMELEN || input.size() == 0)
                 {
-                    if (!name.empty() && std::islower(name[0]))
+                    if (std::islower(input[0]))
                     {
-                        name[0] = std::toupper(name[0]);
+                        input[0] = std::toupper(input[0]);
                     }
                     name = input;
                     std::cout << "Please enter the description of the item: ";
