@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <memory>
+#include <algorithm>
 
 LinkedList::LinkedList()
 {
@@ -52,6 +53,9 @@ void LinkedList::add(Stock info)
 
 void LinkedList::remove(std::string id)
 {
+    /* remove id from idList attribute */
+    idList.erase(std::remove(idList.begin(), idList.end(), id), idList.end());
+
     std::shared_ptr<Node> temp = head;
     std::shared_ptr<Node> prev = nullptr;
     while (temp != nullptr)
