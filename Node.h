@@ -4,6 +4,7 @@
 #include "Coin.h"
 #include <iomanip>
 #include <iostream>
+#include <memory>
 
 // The length of the id string not counting the nul terminator
 #define IDLEN 5
@@ -78,9 +79,9 @@ public:
     Node(Stock temp);
     ~Node();
     // pointer to the data held for the node
-    Stock *data;
+    std::shared_ptr<Stock> data;
     // pointer to the next node in the list
-    Node *next;
+    std::shared_ptr<Node> next; 
 };
 
 #endif // NODE_H

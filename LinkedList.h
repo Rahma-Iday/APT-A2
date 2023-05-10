@@ -30,7 +30,7 @@ public:
 
 private:
     // the beginning of the list
-    Node* head;
+    std::shared_ptr<Node> head;
   
     // how many nodes are there in the list?
     unsigned listLength;

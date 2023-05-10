@@ -1,9 +1,10 @@
 #include "Node.h"
 
+
+
 Node::Node(Stock info)
 {
-    data = new Stock;
-    *data = info;
+    std::shared_ptr<Stock> data = std::make_shared<Stock>(info);
     next = nullptr;
 };
 Node::~Node(){

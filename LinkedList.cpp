@@ -1,6 +1,7 @@
 #include "LinkedList.h"
 #include <iostream>
 #include <iomanip>
+#include <memory>
 
 LinkedList::LinkedList()
 {
@@ -10,7 +11,7 @@ LinkedList::LinkedList()
 
 void LinkedList::add(Stock info)
 {
-    Node *newNode = new Node(info);
+    std::shared_ptr<Node> newNode = std::make_shared<Node>(info);
     idList.push_back(info.id);
 
     if (head == nullptr)
@@ -24,8 +25,8 @@ void LinkedList::add(Stock info)
     }
     else
     {
-        Node *currNode = head;
-        Node *nextNode = head->next;
+        std::shared_ptr<Node> currNode = head;
+        std::shared_ptr<Node> nextNode = head->next;
         bool inserted = false;
         while (nextNode != nullptr && !inserted)
         {
@@ -51,8 +52,8 @@ void LinkedList::add(Stock info)
 
 void LinkedList::remove(std::string id)
 {
-    Node *temp = head;
-    Node *prev = nullptr;
+    std::shared_ptr<Node> temp = head;
+    std::shared_ptr<Node> prev = nullptr;
     while (temp != nullptr)
     {
         if (temp->data->id == id)
@@ -65,7 +66,6 @@ void LinkedList::remove(std::string id)
             {
                 prev->next = temp->next;
             }
-            delete temp;
             listLength--;
             return;
         }
@@ -81,7 +81,7 @@ void LinkedList::print()
     std::cout << "ID   |Name                                    | Available | Price" << std::endl;
     std::cout << "-------------------------------------------------------------------" << std::endl;
 
-    Node *temp = head;
+    std::shared_ptr<Node> temp = head;
     while (temp != nullptr)
     {
         std::cout << std::left << std::setfill(' ') << std::setw(5) << temp->data->id << "|";
@@ -102,7 +102,7 @@ unsigned int LinkedList::getListLength()
 unsigned int LinkedList::getStockLevels(std::string id)
 {
     int stockLevel = 0;
-    Node *temp = head;
+    std::shared_ptr<Node> temp = head;
 
     while (temp != nullptr)
     {
@@ -120,7 +120,7 @@ unsigned int LinkedList::getStockLevels(std::string id)
 std::string LinkedList::getName(std::string id)
 {
     std::string name = "Not Found";
-    Node *temp = head;
+    std::shared_ptr<Node> temp = head;
 
     while (temp != nullptr)
     {
@@ -138,7 +138,7 @@ std::string LinkedList::getName(std::string id)
 std::string LinkedList::getDescription(std::string id)
 {
     std::string description = "Not Found";
-    Node *temp = head;
+    std::shared_ptr<Node> temp = head;
 
     while (temp != nullptr)
     {
@@ -159,7 +159,7 @@ Price LinkedList::getPrice(std::string id)
     price.dollars = 0;
     price.cents = 0;
 
-    Node *temp = head;
+    std::shared_ptr<Node> temp = head;
     while (temp != nullptr)
     {
         if (temp->data->id == id)
@@ -175,7 +175,7 @@ Price LinkedList::getPrice(std::string id)
 
 void LinkedList::resetStock()
 {
-    Node *temp = head;
+    std::shared_ptr<Node> temp = head;
     while (temp != nullptr)
     {
         temp->data->on_hand = DEFAULT_STOCK_LEVEL;
@@ -185,7 +185,7 @@ void LinkedList::resetStock()
 
 void LinkedList::buy(std::string id)
 {
-    Node *temp = head;
+    std::shared_ptr<Node> temp = head;
     while (temp != nullptr)
     {
         if (temp->data->id == id)
@@ -201,14 +201,6 @@ void LinkedList::buy(std::string id)
 
 void LinkedList::deleteList()
 {
-    Node *temp = head;
-    while (temp != nullptr)
-    {
-        Node *next = temp->next;
-        delete temp;
-        temp = next;
-    }
-    head = nullptr;
     listLength = 0;
 }
 
