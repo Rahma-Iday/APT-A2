@@ -8,6 +8,11 @@
 #include <cmath>
 #include <stdexcept>
 #include <limits>
+#include <vector>
+#include <iomanip>
+#include <sstream>
+#include <iostream>
+#include "Coin.h"
 using std::string;
 using std::vector;
 
@@ -797,19 +802,23 @@ void printInvalidInput()
 
 std::string generateId(const std::vector<std::string> &idList)
 {
-    int maxID = -1;
+    std::set<int> idSet;
 
     for (const std::string &id : idList)
     {
         int idNum = std::stoi(id.substr(1));
-        if (idNum > maxID)
-        {
-            maxID = idNum;
-        }
+        idSet.insert(idNum);
+    }
+
+    int availableID = 1;
+    
+    while (idSet.find(availableID) != idSet.end())
+    {
+        availableID++;
     }
 
     std::ostringstream newId;
-    newId << "I" << std::setfill('0') << std::setw(4) << (maxID + 1);
+    newId << "I" << std::setfill('0') << std::setw(4) << availableID;
 
     return newId.str();
 }
@@ -825,6 +834,11 @@ void getNewItem(LinkedList &list)
     std::string name = "";
     std::string description = "";
     std::string id = generateId(list.idList);
+    if(id.size() > 5)
+    {
+        std::cout << "Error: ID limit reached cannot add anymore items" << std::endl;
+        return;
+    }
     std::cout << "The id of the new stock will be: " << id << std::endl;
     std::cout << "Please enter the name of the item: ";
     while (!itemAdded)
@@ -955,12 +969,6 @@ void removeItem(LinkedList &list)
         std::cout << "Item not found." << std::endl;
     }
 }
-
-#include <vector>
-#include <iomanip>
-#include <sstream>
-#include <iostream>
-#include "Coin.h"
 
 void displayCoins(std::vector<Coin> &coins)
 {
