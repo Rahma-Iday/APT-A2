@@ -5,7 +5,7 @@ All Tasks:
     REQ3: Display main menu (vic) DONE
     REQ4: Display items (sarvesh)
     REQ5: Purchase items (vic) ALMOST DONE 
-    REQ6: Save and exit : 1/2 DONE
+    REQ6: Save and exit : DONE
     REQ7: Add item : DONE (sarvesh)
     REQ8: Remove items: DONE (sarvesh)
     REQ9: Reset stock levels : DONE (sarvesh)
