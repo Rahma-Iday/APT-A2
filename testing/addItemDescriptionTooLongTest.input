@@ -1,0 +1,7 @@
+4
+valid item name 
+This is a long string that can be used as a test description. It contains more than 225 characters and can be used to test the limits of various applications that accept user input. The purpose of this string is to help developers ensure that their applications can handle long strings without crashing or encountering other errors. It is important to test for these kinds of scenarios, as they can occur in real-world use cases and can cause issues for users. By testing with longer strings like this one, developers can ensure that their applications are robust and can handle a variety of input lengths and formats
+Description holder
+3.50
+3
+
