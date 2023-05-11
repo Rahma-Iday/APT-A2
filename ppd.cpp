@@ -876,10 +876,12 @@ void getNewItem(LinkedList &list)
                         input[0] = std::toupper(input[0]);
                     }
                     name = input;
+                    input = "";
                     std::cout << "Please enter the description of the item: ";
                 }
                 else
                 {
+                    input.clear();
                     std::cout << "Name too long. Please enter a name less than " << NAMELEN << " characters long: ";
                 }
             }
@@ -892,6 +894,7 @@ void getNewItem(LinkedList &list)
                 }
                 else
                 {
+                    input.clear();
                     std::cout << "Description too long. Please enter a description less than " << DESCLEN << " characters long: ";
                 }
             }
