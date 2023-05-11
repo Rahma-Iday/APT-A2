@@ -13,10 +13,12 @@
 #include <sstream>
 #include <iostream>
 #include "Coin.h"
+#include <dirent.h>
+#include <memory>
+#include <functional>
 using std::string;
 using std::vector;
 
-bool checkFilesExist(string stockFile, string coinFile);
 bool readStockData(string fileName, char delim);
 bool readCoinData(string fileName, char delim);
 vector<Stock> loadStockData(string fileName, char delim);
@@ -28,16 +30,17 @@ void printInvalidInput();
 void getNewItem(LinkedList &list);
 bool getPrice(unsigned int &x, unsigned int &y);
 void printDebug();
-void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coin> &coins);
-void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile, vector<Coin> &coins);
+void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, vector<Coin> &coins);
+void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFilePath, string coinFilePath, vector<Coin> &coins);
 void removeItem(LinkedList &list);
-void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFile, string coinFile);
+void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFilePath, string coinFilePath);
 void displayCoins(std::vector<Coin> &coins);
 void resetCoins(std::vector<Coin> &coins);
 void makePurchase(vector<Coin> &coinVect, LinkedList &list);
 bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins);
 void processMoney(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins);
 void printAllCoins(vector<Coin> &coins);
+std::string findFilePath(const std::string& fileName, const std::string& currentDir = ".");
 
 /**
  * manages the running of the program, initialises data structures, loads
@@ -53,15 +56,19 @@ int main(int argc, char **argv)
         string stockFile(argv[1]);
         std::string coinFile(argv[2]);
 
+        string stockFilePath = findFilePath(stockFile);
+        string coinFilePath = findFilePath(coinFile);
+        std::cout<< stockFilePath << std::endl;
+
         /*loading  data*/
         // check if both files exists, only then read data
-        if (checkFilesExist(stockFile, coinFile))
+        if ( !stockFilePath.empty() && !coinFilePath.empty())
         {
             // check if both Files have valid data by reading, then only loads data
-            if (readStockData(stockFile, STOCK_DELIM) && readCoinData(coinFile, DELIM[0]))
+            if (readStockData(stockFilePath, STOCK_DELIM) && readCoinData(coinFilePath, DELIM[0]))
             {
-                vector<Stock> stock = loadStockData(stockFile, STOCK_DELIM);
-                vector<Coin> coins = loadCoinData(coinFile, DELIM[0]);
+                vector<Stock> stock = loadStockData(stockFilePath, STOCK_DELIM);
+                vector<Coin> coins = loadCoinData(coinFilePath, DELIM[0]);
 
                 // put stock vector's stocks into linked list
                 LinkedList list;
@@ -71,8 +78,12 @@ int main(int argc, char **argv)
                 }
                 /*load coin into array data type?*/
 
-                handleInput(list, stockFile, coinFile, coins);
+                handleInput(list, coinFilePath, coinFilePath, coins);
             }
+        } 
+        else 
+        {
+            std::cout << "Either the Coin File or Stock File provided does not exist! Retry with Different Files" << std::endl;
         }
     }
     else
@@ -82,7 +93,7 @@ int main(int argc, char **argv)
     return EXIT_SUCCESS;
 }
 
-void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coin> &coins)
+void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, vector<Coin> &coins)
 {
 
     // create a loop that executes the return to main menu functionality until exit options (3 or 9) are pressed
@@ -129,12 +140,12 @@ void handleInput(LinkedList &list, string stockFile, string coinFile, vector<Coi
             }
         }
         std::cout << std::endl;
-        handleOptions(list, exitProgram, optionNo, stockFile, coinFile, coins);
+        handleOptions(list, exitProgram, optionNo, stockFilePath, coinFilePath, coins);
         std::cout << std::endl;
     }
 }
 
-void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFile, string coinFile, vector<Coin> &coins)
+void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFilePath, string coinFilePath, vector<Coin> &coins)
 {
     if (optionNo == 1)
     {
@@ -148,7 +159,7 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
     }
     else if (optionNo == 3)
     { // Save and Exit
-        saveAndExit(list, coins, stockFile, coinFile);
+        saveAndExit(list, coins, stockFilePath, coinFilePath);
         exitProgram = true; // only if method returns true tho
     }
     else if (optionNo == 4)
@@ -178,9 +189,9 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
     }
 }
 
-void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFile, string coinFile)
+void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFilePath, string coinFilePath)
 {
-    std::ofstream outputStockFile(stockFile, std::ofstream::out);
+    std::ofstream outputStockFile(stockFilePath, std::ofstream::out);
 
     if (outputStockFile.is_open())
     {
@@ -203,7 +214,7 @@ void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFile, s
         std::cout << "Error opening Stock file." << std::endl;
     }
 
-    std::ofstream outputCoinFile(coinFile, std::ofstream::out);
+    std::ofstream outputCoinFile(coinFilePath, std::ofstream::out);
     std::vector<int> expectedvector = {5, 10, 20, 50, 100, 200, 500, 1000};
 
     if (outputCoinFile.is_open())
@@ -452,31 +463,53 @@ vector<Coin> loadCoinData(string fileName, char delim)
     return coins;
 }
 
-/**
- * Checks that both provided files exist.
- * If both exists, returns true.
- * If not returns false.
- **/
-bool checkFilesExist(string stockFile, string coinFile)
+
+
+// This function searches for a file with the given file name in the current directory
+// and all its subdirectories. It returns the full path of the first occurrence of the
+// file, or an empty string if the file was not found.
+std::string findFilePath(const std::string& fileName, const std::string& currentDir)
 {
-    bool fileExists = false;
+    std::string result;  // This will hold the result (the full path of the file)
 
-    std::ifstream file1(stockFile, std::ios::binary);
-    std::ifstream file2(coinFile, std::ios::binary);
+    // Open the current directory the ppd executable is in using the opendir function. 
+    // This returns a pointer to a DIR struct, which represents the directory stream.
+    std::unique_ptr<DIR, std::function<int(DIR*)>> dir(opendir(currentDir.c_str()), closedir);
 
-    if (file1.good() && file2.good())
+    // Check if the directory was successfully opened
+    if (dir == nullptr)
     {
-        fileExists = true;
+        std::cerr << "Failed to open the current directory for some reason: " << currentDir << '\n';
     }
     else
     {
-        std::cout << "Either the Coin File or Stock File provided does not exist!" << std::endl;
+        // Loop over all entries in the directory
+        struct dirent* entry;
+        while ((entry = readdir(dir.get())) != nullptr && result.empty())
+        {
+            // If the entry is a directory and not "." or "..", recursively search it
+            if (entry->d_type == DT_DIR)
+            {
+                if (std::string(entry->d_name) != "." && std::string(entry->d_name) != "..")
+                {
+                    std::string subdir = currentDir + "/" + entry->d_name;
+                    result = findFilePath(fileName, subdir);
+                }
+            }
+            // If the entry is a regular file and its name matches the given file name,
+            // set the result to the full path of the file
+            else if (entry->d_type == DT_REG && std::string(entry->d_name) == fileName)
+            {
+                result = currentDir + "/" + fileName;
+            }
+        }
     }
-    file1.close();
-    file2.close();
 
-    return fileExists;
+    // Return the result (which may be an empty string)
+    return result;
 }
+
+
 
 /**
  * Prints main menu
