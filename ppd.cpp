@@ -465,13 +465,13 @@ vector<Coin> loadCoinData(string fileName, char delim)
 // file, or an empty string if the file was not found.
 std::string findFilePath(const std::string& fileName, const std::string& currentDir)
 {
-    std::string result;  // This will hold the result (the full path of the file)
+    std::string result;  // This will hold the result (aka the full path of the file)
 
     // Open the current directory the ppd executable is in using the opendir function. 
     // This returns a pointer to a DIR struct, which represents the directory stream.
     std::unique_ptr<DIR, std::function<int(DIR*)>> dir(opendir(currentDir.c_str()), closedir);
 
-    // Check if the directory was successfully opened
+    // Checks if the directory was successfully opened
     if (dir == nullptr)
     {
         std::cerr << "Failed to open the current directory for some reason: " << currentDir << '\n';
@@ -485,6 +485,7 @@ std::string findFilePath(const std::string& fileName, const std::string& current
             // If the entry is a directory and not "." or "..", recursively search it
             if (entry->d_type == DT_DIR)
             {
+                // checks subdirectories recursively
                 if (std::string(entry->d_name) != "." && std::string(entry->d_name) != "..")
                 {
                     std::string subdir = currentDir + "/" + entry->d_name;
