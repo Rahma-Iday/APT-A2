@@ -923,7 +923,7 @@ bool getPrice(unsigned int &x, unsigned int &y)
             {
                 input = std::stod(inputStr);
                 if(input < 0){
-                    throw std::invalid_argument("Invalid input. Please enter a positive number:");
+                    throw std::invalid_argument("Invalid input. Please enter a valid price::");
                 }
                 x = static_cast<unsigned int>(input);
                 y = static_cast<unsigned int>(round((input - x) * 100));
