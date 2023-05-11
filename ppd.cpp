@@ -58,7 +58,6 @@ int main(int argc, char **argv)
 
         string stockFilePath = findFilePath(stockFile);
         string coinFilePath = findFilePath(coinFile);
-        std::cout<< stockFilePath << std::endl;
 
         /*loading  data*/
         // check if both files exists, only then read data
@@ -78,7 +77,7 @@ int main(int argc, char **argv)
                 }
                 /*load coin into array data type?*/
 
-                handleInput(list, coinFilePath, coinFilePath, coins);
+                handleInput(list, stockFilePath, coinFilePath, coins);
             }
         } 
         else 
@@ -275,14 +274,12 @@ bool readStockData(string fileName, char delim)
             }
             catch (const std::invalid_argument &e)
             {
-                std::cerr << "Error: invalid argument: " << e.what() << std::endl;
-                // std::cout << "Invalid Data in Stock File" << std::endl;
+                std::cout << "Invalid Data in Stock File" << std::endl;
                 validData = false;
             }
             catch (const std::out_of_range &e)
             {
-                std::cerr << "Error: out of range: " << e.what() << std::endl;
-                // std::cout << "Invalid Data in Stock File" << std::endl;
+                std::cout << "Invalid Data in Stock File" << std::endl;
                 validData = false;
             }
 
@@ -349,14 +346,12 @@ bool readCoinData(string fileName, char delim)
             }
             catch (const std::invalid_argument &e)
             {
-                std::cerr << "Error: invalid argument: " << e.what() << std::endl;
-                // std::cout << "Invalid Data in Stock File" << std::endl;
+                std::cout << "Invalid Data in Coin File" << std::endl;
                 validData = false;
             }
             catch (const std::out_of_range &e)
             {
-                std::cerr << "Error: out of range: " << e.what() << std::endl;
-                // std::cout << "Invalid Data in Stock File" << std::endl;
+                std::cout << "Invalid Data in Coin File" << std::endl;
                 validData = false;
             }
         }
