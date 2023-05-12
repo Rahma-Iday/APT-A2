@@ -459,7 +459,11 @@ vector<Coin> loadCoinData(string fileName, char delim)
 }
 
 
-
+/**
+ *  This function was adapted and modified to fit our needs and to fit c++14 standards
+ * from https://faq.cprogramming.com/cgi-bin/smartfaq.cgi?answer=1046380353&id=1044780608
+ * 
+*/
 // This function searches for a file with the given file name in the current directory
 // and all its subdirectories. It returns the full path of the first occurrence of the
 // file, or an empty string if the file was not found.
@@ -467,7 +471,8 @@ std::string findFilePath(const std::string& fileName, const std::string& current
 {
     std::string result;  // This will hold the result (aka the full path of the file)
 
-    // Open the current directory the ppd executable is in using the opendir function. 
+    // Opens the current directory using the opendir function 
+    // (for the first run of this function the current directory will be the directory the ppd exectuable is in.) 
     // This returns a pointer to a DIR struct, which represents the directory stream.
     std::unique_ptr<DIR, std::function<int(DIR*)>> dir(opendir(currentDir.c_str()), closedir);
 
@@ -478,14 +483,14 @@ std::string findFilePath(const std::string& fileName, const std::string& current
     }
     else
     {
-        // Loop over all entries in the directory
+        // Loop over all entries in the current directory
         struct dirent* entry;
         while ((entry = readdir(dir.get())) != nullptr && result.empty())
         {
-            // If the entry is a directory and not "." or "..", recursively search it
+            // If the entry is a directory and not "."(a current directory) or ".."(a parent directory), recursively search it
             if (entry->d_type == DT_DIR)
             {
-                // checks subdirectories recursively
+                // checks all subdirectories recursively
                 if (std::string(entry->d_name) != "." && std::string(entry->d_name) != "..")
                 {
                     std::string subdir = currentDir + "/" + entry->d_name;
