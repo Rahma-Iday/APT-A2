@@ -9,7 +9,10 @@ Sample stock and coin files are provided in this repository:
 - monopoly_test_coins.dat
 
 About: 
-This program was created as a coursework assessment for COSC1076 - Advanced Programming Techniques.
+This program was created as a coursework assessment for COSC1076 - Advanced Programming Techniques. 
+
+Group name:
+Monopoly
 
 Contributors:
 - Sarvesh Singh (s3946533)
