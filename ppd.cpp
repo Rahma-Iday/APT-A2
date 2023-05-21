@@ -176,7 +176,6 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
     else if (optionNo == 7)
     { // Reset Stock
         list.resetStock();
-        std::cout << "\"All stock has been reset to " << DEFAULT_STOCK_LEVEL << "\"" << std::endl;
     }
     else if (optionNo == 8)
     { // Reset Coins

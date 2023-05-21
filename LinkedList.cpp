@@ -185,6 +185,7 @@ void LinkedList::resetStock()
         temp->data->on_hand = DEFAULT_STOCK_LEVEL;
         temp = temp->next;
     }
+    std::cout << "\"All stock has been reset to " << DEFAULT_STOCK_LEVEL << "\"" << std::endl;
 }
 
 void LinkedList::buy(std::string id)
