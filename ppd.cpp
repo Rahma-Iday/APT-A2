@@ -1,5 +1,5 @@
 #include <iostream>
-#include "LinkedList.h"
+#include "DoubleLinkedList.h"
 #include <fstream>
 #include <sstream>
 #include <set>
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
                 vector<Coin> coins = loadCoinData(coinFilePath, DELIM[0]);
 
                 // put stock vector's stocks into linked list
-                LinkedList list;
+                DoubleLinkedList list;
                 for (int i = 0; i < static_cast<int>(stock.size()); i++)
                 {
                     list.add(stock[i]);

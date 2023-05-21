@@ -12,8 +12,8 @@ public:
     std::vector<std::string> idList;
 
     // more functions to be added perhaps...
-    void add(Stock info);
-    void remove(std::string id);
+    virtual void add(Stock info);
+    virtual void remove(std::string id);
     void print();
     unsigned int getListLength();
     unsigned int  getStockLevels(std::string id);
@@ -23,15 +23,14 @@ public:
     void resetStock();
     void buy(std::string id);
     void deleteList();
-    
     void printIdList();
 
 
 
-private:
+protected:
     // the beginning of the list
     std::shared_ptr<Node> head;
-  
+
     // how many nodes are there in the list?
     unsigned listLength;
     
