@@ -30,13 +30,14 @@ void printInvalidInput();
 void getNewItem(LinkedList &list);
 bool getPrice(unsigned int &x, unsigned int &y);
 void printDebug();
-void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, vector<Coin> &coins);
-void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFilePath, string coinFilePath, vector<Coin> &coins);
+void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, vector<Coin> &coins, bool &colour);
+void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFilePath, 
+                                                        string coinFilePath, vector<Coin> &coins, bool &colour);
 void removeItem(LinkedList &list);
 void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFilePath, string coinFilePath);
 void displayCoins(std::vector<Coin> &coins);
 void resetCoins(std::vector<Coin> &coins);
-void makePurchase(vector<Coin> &coinVect, LinkedList &list);
+void makePurchase(vector<Coin> &coinVect, LinkedList &list, bool &colour);
 bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins);
 void processMoney(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins);
 void printAllCoins(vector<Coin> &coins);
@@ -69,15 +70,48 @@ int main(int argc, char **argv)
                 vector<Stock> stock = loadStockData(stockFilePath, STOCK_DELIM);
                 vector<Coin> coins = loadCoinData(coinFilePath, DELIM[0]);
 
-                // put stock vector's stocks into linked list
-                DoubleLinkedList list;
-                for (int i = 0; i < static_cast<int>(stock.size()); i++)
-                {
-                    list.add(stock[i]);
-                }
-                /*load coin into array data type?*/
+                bool colour = false;
 
-                handleInput(list, stockFilePath, coinFilePath, coins);
+                std::cout<< "Would you like to enable colour? press 'y' for yes" << std::endl;
+                if(readInput() == "y")
+                {
+                    colour = true;
+                    std::cout<< "Colour Enabled" << std::endl;
+                    std::cout<<std::endl;
+                }
+
+
+                std::cout<< "Would you like to enable double linked list? press 'y' for yes: ";
+                if(readInput() == "y")
+                {
+                    std::cout << "Double Linked List Enabled" << std::endl;
+                    std::cout << std::endl;
+
+
+                    DoubleLinkedList list;
+                    // put stock vector's stocks into linked list
+                    for (int i = 0; i < static_cast<int>(stock.size()); i++)
+                    {
+                        list.add(stock[i]);
+                    }
+                    /*load coin into array data type?*/
+
+                    handleInput(list, stockFilePath, coinFilePath, coins, colour);
+                }else{
+                    std::cout<< "Single Linked List Enabled" << std::endl;
+                    std::cout << std::endl;
+
+
+                    LinkedList list;
+                    // put stock vector's stocks into linked list
+                    for (int i = 0; i < static_cast<int>(stock.size()); i++)
+                    {
+                        list.add(stock[i]);
+                    }
+                    /*load coin into array data type?*/
+
+                    handleInput(list, stockFilePath, coinFilePath, coins, colour);
+                }
             }
         } 
         else 
@@ -92,7 +126,7 @@ int main(int argc, char **argv)
     return EXIT_SUCCESS;
 }
 
-void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, vector<Coin> &coins)
+void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, vector<Coin> &coins, bool &colour)
 {
 
     // create a loop that executes the return to main menu functionality until exit options (3 or 9) are pressed
@@ -139,12 +173,13 @@ void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, ve
             }
         }
         std::cout << std::endl;
-        handleOptions(list, exitProgram, optionNo, stockFilePath, coinFilePath, coins);
+        handleOptions(list, exitProgram, optionNo, stockFilePath, coinFilePath, coins, colour);
         std::cout << std::endl;
     }
 }
 
-void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFilePath, string coinFilePath, vector<Coin> &coins)
+void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, 
+                    string stockFilePath, string coinFilePath, vector<Coin> &coins, bool &colour)
 {
     if (optionNo == 1)
     {
@@ -154,7 +189,7 @@ void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string st
     }
     else if (optionNo == 2)
     { // Purchase Item
-        makePurchase(coins, list);
+        makePurchase(coins, list, colour);
     }
     else if (optionNo == 3)
     { // Save and Exit
@@ -533,7 +568,7 @@ void displayMenu()
 /**
  * Handles if a user selects purchase item / option 2
  **/
-void makePurchase(vector<Coin> &coinVect, LinkedList &list)
+void makePurchase(vector<Coin> &coinVect, LinkedList &list, bool &colour)
 {
     std::cout << "Purchase Item" << std::endl
               << "-------------" << std::endl;
@@ -597,9 +632,17 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
 
                 while (totalInserted < itemPrice) // take user input or exit transaction
                 {
-                    std::cout << "You currently owe $"
-                              << std::fixed << std::setprecision(2) << std::setfill('0')
-                              << (itemPrice - totalInserted) << ": ";
+
+                    if(colour){
+                        std::cout << "You currently owe \033[1;34m$"
+                                  << std::fixed << std::setprecision(2) << std::setfill('0')
+                                  << (itemPrice - totalInserted) << "\033[0m" << ": ";
+                    }else{
+                        std::cout << "You currently owe $"
+                                  << std::fixed << std::setprecision(2) << std::setfill('0')
+                                  << (itemPrice - totalInserted) << ": ";
+                    }
+
                     string currentCoin = readInput();
                     if (isNumber(currentCoin))
                     {
