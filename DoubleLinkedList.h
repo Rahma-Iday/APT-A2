@@ -12,7 +12,7 @@ public:
     void add(Stock info) override;
     void remove(std::string id) override;
 
-protected:
+private:
     // the ending of the list
     std::shared_ptr<Node> tail;
     

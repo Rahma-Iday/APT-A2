@@ -28,34 +28,68 @@ void DoubleLinkedList::add(Stock info)
     }
     else
     {
-        if (head->data->name > newNode->data->name)
+        if (newNode->data->name[0] <= 'M')
         {
-            newNode->next = head;
-            head->prev = newNode;
-            head = newNode;
+            // If the first character of the name is less than or equal to 'M', start traversing from the head
+            if (head->data->name > newNode->data->name)
+            {
+                newNode->next = head;
+                head->prev = newNode;
+                head = newNode;
+            }
+            else
+            {
+                std::shared_ptr<Node> currNode = head;
+                while (currNode->next != nullptr && currNode->next->data->name < newNode->data->name)
+                {
+                    currNode = currNode->next;
+                }
+                newNode->next = currNode->next;
+                newNode->prev = currNode;
+                if (currNode->next != nullptr)
+                {
+                    currNode->next->prev = newNode;
+                }
+                currNode->next = newNode;
+                if (newNode->next == nullptr)
+                {
+                    tail = newNode;
+                }
+            }
         }
         else
         {
-            std::shared_ptr<Node> currNode = head;
-            while (currNode->next != nullptr && currNode->next->data->name < newNode->data->name)
+            // If the first character of the name is greater than 'M', start traversing from the tail
+            if (tail->data->name < newNode->data->name)
             {
-                currNode = currNode->next;
-            }
-            newNode->next = currNode->next;
-            newNode->prev = currNode;
-            if (currNode->next != nullptr)
-            {
-                currNode->next->prev = newNode;
-            }
-            currNode->next = newNode;
-            if (newNode->next == nullptr)
-            {
+                newNode->prev = tail;
+                tail->next = newNode;
                 tail = newNode;
+            }
+            else
+            {
+                std::shared_ptr<Node> currNode = tail;
+                while (currNode->prev != nullptr && currNode->prev->data->name > newNode->data->name)
+                {
+                    currNode = currNode->prev;
+                }
+                newNode->prev = currNode->prev;
+                newNode->next = currNode;
+                if (currNode->prev != nullptr)
+                {
+                    currNode->prev->next = newNode;
+                }
+                currNode->prev = newNode;
+                if (newNode->prev == nullptr)
+                {
+                    head = newNode;
+                }
             }
         }
     }
     listLength++;
 }
+
 
 void DoubleLinkedList::remove(std::string id) 
 {
