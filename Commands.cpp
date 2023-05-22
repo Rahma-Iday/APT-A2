@@ -533,7 +533,7 @@ bool getPrice(unsigned int &x, unsigned int &y)//gets the price
                 if (y % 5 != 0)//if the cents is not divisible by 5
                 {
                     throw std::invalid_argument("Invalid input. Make sure the cents is devisible by 5:");
-                }
+                }//otherwise we have the price
 
                 gotPrice = true;
             }
