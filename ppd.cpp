@@ -134,12 +134,12 @@ void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, ve
                 }
                 else
                 {
-                    printInvalidInput();
+                    std::cout<< "Invalid input. you have entered a number that does not match the options" << std::endl;
                 }
             }
             catch (std::invalid_argument &e)
             {
-                printInvalidInput();
+                std::cout<< "Invalid input. you have entered a number that does not match the options" << std::endl;
             }
         }
     }
@@ -201,12 +201,12 @@ bool readStockData(string fileName, char delim)
             }
             catch (const std::invalid_argument &e)
             {
-                std::cout << "Invalid Data in Stock File" << std::endl;
+                std::cout << "Invalid Data in Stock File, there isn't a number in the price field" << std::endl;
                 validData = false;
             }
             catch (const std::out_of_range &e)
             {
-                std::cout << "Invalid Data in Stock File" << std::endl;
+                std::cout << "Invalid Data in Stock File, the price number is too big" << std::endl;
                 validData = false;
             }
 
@@ -231,7 +231,7 @@ bool readStockData(string fileName, char delim)
         }
         else
         {
-            std::cout << "Invalid Data in Stock File" << std::endl;
+            std::cout << "Invalid Data in Stock File, check the dilemeters you are using" << std::endl;
             validData = false;
         }
     }
@@ -268,24 +268,24 @@ bool readCoinData(string fileName, char delim)
                 // checks if duplicate value is being inserted
                 if (denomSet.insert(denomination).second == false)
                 {
-                    std::cout << "Invalid Data in Coin File" << std::endl;
+                    std::cout << "Invalid Data in Coin File, you have two of the same denominations being entered" << std::endl;
                 }
             }
             catch (const std::invalid_argument &e)
             {
-                std::cout << "Invalid Data in Coin File" << std::endl;
+                std::cout << "Invalid Data in Coin File, there is not a number in some of the data" << std::endl;
                 validData = false;
             }
             catch (const std::out_of_range &e)
             {
-                std::cout << "Invalid Data in Coin File" << std::endl;
+                std::cout << "Invalid Data in Coin File, the number in the coins file is too big" << std::endl;
                 validData = false;
             }
         }
         else
         {
             // invalid number of feilds
-            std::cout << "Invalid Data in Coin File" << std::endl;
+            std::cout << "Invalid Data in Coin File, please check the amount of fields per row and the dilemeter" << std::endl;
             validData = false;
         }
     }
@@ -295,7 +295,7 @@ bool readCoinData(string fileName, char delim)
     std::set<int> expectedSet = {5, 10, 20, 50, 100, 200, 500, 1000};
     if (denomSet != expectedSet)
     {
-        std::cout << "Invalid Data in Coin File" << std::endl;
+        std::cout << "Invalid Data in Coin File, you have an invalid denomination in the coins file" << std::endl;
         validData = false;
     }
 

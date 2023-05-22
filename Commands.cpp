@@ -1,7 +1,6 @@
 #include "Commands.h"
 string readInput();
 bool isNumber(string s);
-void printInvalidInput();
 void getNewItem(LinkedList &list);
 bool getPrice(unsigned int &x, unsigned int &y);
 void printDebug();
@@ -526,25 +525,26 @@ bool getPrice(unsigned int &x, unsigned int &y)
             {
                 input = std::stod(inputStr);
                 if(input < 0){
-                    throw std::invalid_argument("Invalid input. Please enter a valid price::");
+                    throw std::invalid_argument("Invalid input. Please enter a valid price that is not negative: ");
                 }
                 x = static_cast<unsigned int>(input);
                 y = static_cast<unsigned int>(round((input - x) * 100));
 
                 if (y % 5 != 0)
                 {
-                    throw std::invalid_argument("Invalid input. Please enter a valid price:");
+                    throw std::invalid_argument("Invalid input. Please enter a valid price and make sure the cents is devisible by 5:");
                 }
 
                 gotPrice = true;
             }
             catch (const std::invalid_argument &e)
             {
-                std::cerr << "Invalid input. Please enter a valid price:";
+                std::cerr << "Invalid input. Please enter some type of number:";
             }
             catch (const std::out_of_range &e)
             {
-                std::cerr << "Invalid input. Please enter a valid price:";
+                std::cerr << "Invalid input. Please enter a number that is not too big have does not have" <<
+                                                                    "more than two decimal numbers:";
             }
         }
         else if (inputStr == "")
@@ -629,13 +629,6 @@ void resetCoins(std::vector<Coin> &coins)
         coins[i].count = DEFAULT_COIN_COUNT;
     }
     std::cout << "\"All coins have been reset to the default level of " << DEFAULT_COIN_COUNT << "\"" << std::endl;
-}
-
-/*prints Invalid input*/
-void printInvalidInput()
-{
-    std::cout << "Invalid input.\n"
-              << std::endl;
 }
 
 /*credit: A1 source code helper.cpp file*/
