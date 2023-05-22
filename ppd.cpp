@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 
                 bool colour = false;
 
-                std::cout<< "Would you like to enable colour? press 'y' for yes" << std::endl;
+                std::cout<< "Would you like to enable colour? press 'y' for yes (if anything else is entered it is disabled): " << std::endl;
                 if(readInput() == "y")
                 {
                     colour = true;
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
                 }
 
 
-                std::cout<< "Would you like to enable double linked list? press 'y' for yes: ";
+                std::cout<< "Would you like to enable double linked list? press 'y' for yes(if anything else is entered it is disabled): ";
                 if(readInput() == "y")
                 {
                     std::cout << "Double Linked List Enabled" << std::endl;
