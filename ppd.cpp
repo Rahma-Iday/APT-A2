@@ -2,13 +2,13 @@
 #include <map>
 
 
-bool readStockData(string fileName, char delim);
-bool readCoinData(string fileName, char delim);
-vector<Stock> loadStockData(string fileName, char delim);
-vector<Coin> loadCoinData(string fileName, char delim);
-void displayMenu();
-void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, vector<Coin> &coins, bool &colour);
-std::string findFilePath(const std::string& fileName, const std::string& currentDir = ".");
+bool readStockData(string fileName, char delim);//read stock data from file
+bool readCoinData(string fileName, char delim);//read coin data from file
+vector<Stock> loadStockData(string fileName, char delim);//load stock data from file
+vector<Coin> loadCoinData(string fileName, char delim);//load coin data from file
+void displayMenu();//display the main menu
+void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, vector<Coin> &coins, bool &colour);//handle the input from the user
+std::string findFilePath(const std::string& fileName, const std::string& currentDir = ".");//find the file path of the given file name
 
 /**
  * manages the running of the program, initialises data structures, loads
@@ -34,13 +34,13 @@ int main(int argc, char **argv)
             // check if both Files have valid data by reading, then only loads data
             if (readStockData(stockFilePath, STOCK_DELIM) && readCoinData(coinFilePath, DELIM[0]))
             {
-                vector<Stock> stock = loadStockData(stockFilePath, STOCK_DELIM);
-                vector<Coin> coins = loadCoinData(coinFilePath, DELIM[0]);
+                vector<Stock> stock = loadStockData(stockFilePath, STOCK_DELIM);//load stock data from file
+                vector<Coin> coins = loadCoinData(coinFilePath, DELIM[0]);//load coin data from file
 
-                bool colour = false;
+                bool colour = false;//colour is disabled by default
 
                 std::cout<< "Would you like to enable colour? press 'y' for yes (if anything else is entered it is disabled): ";
-                if(readInput() == "y")
+                if(readInput() == "y")//if user enters y, colour is enabled
                 {
                     colour = true;
                     std::cout<< "Colour Enabled" << std::endl;
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 
 
                 std::cout<< "Would you like to enable double linked list? press 'y' for yes(if anything else is entered it is disabled): ";
-                if(readInput() == "y")
+                if(readInput() == "y")//if user enters y, double linkedlist is enabled
                 {
                     std::cout << "Double Linked List Enabled" << std::endl;
                     std::cout << std::endl;
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
                     }
                     /*load coin into array data type?*/
 
-                    handleInput(list, stockFilePath, coinFilePath, coins, colour);
+                    handleInput(list, stockFilePath, coinFilePath, coins, colour);//handle the input from the user
                 }else{
                     std::cout<< "Single Linked List Enabled" << std::endl;
                     std::cout << std::endl;
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
                     }
                     /*load coin into array data type?*/
 
-                    handleInput(list, stockFilePath, coinFilePath, coins, colour);
+                    handleInput(list, stockFilePath, coinFilePath, coins, colour);//handle the input from the user
                 }
             }
         } 
@@ -93,14 +93,14 @@ int main(int argc, char **argv)
     return EXIT_SUCCESS;
 }
 
-void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, vector<Coin> &coins, bool &colour)
+void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, vector<Coin> &coins, bool &colour)//handle the input from the user
 {
 
     // create a loop that executes the return to main menu functionality until exit options (3 or 9) are pressed
     // set a bool value to ensure main menu is displayed until valid input given
 
     bool exitProgram = false;
-    std::map<int, std::unique_ptr<Command>> menuOptions;
+    std::map<int, std::unique_ptr<Command>> menuOptions;//map of menu options and we load in the menu options individually
     menuOptions[1] = std::make_unique<DisplayItemsCommand>(list);
     menuOptions[2] = std::make_unique<PurchaseItemCommand>(coins, list, colour);
     menuOptions[3] = std::make_unique<SaveAndExitCommand>(list, coins, stockFilePath, coinFilePath);
@@ -111,18 +111,18 @@ void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, ve
     menuOptions[8] = std::make_unique<ResetCoinsCommand>(coins);
     menuOptions[9] = std::make_unique<AbortCommand>();
 
-    while (!exitProgram)
+    while (!exitProgram)//while the user has not entered 3 or 9
     {
-        displayMenu();
+        displayMenu();//display the main menu
         std::cout << "Please enter your choice: ";
         string input = readInput();
 
-        if (std::cin.eof())
+        if (std::cin.eof())//if ctrl-d is pressed
         {
             std::cout << "\nCtrl-D was pressed, terminating program." << std::endl;
             exitProgram = true;
         }else{
-            try{
+            try{//try to convert the input to an int
                 int choice = std::stoi(input);
                 auto it = menuOptions.find(std::stoi(input));
                 if (it != menuOptions.end()) {
@@ -132,12 +132,12 @@ void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, ve
                         exitProgram = true;
                     }
                 }
-                else
+                else//if the input is not a valid option
                 {
                     std::cout<< "Invalid input. you have entered a number that does not match the options" << std::endl;
                 }
             }
-            catch (std::invalid_argument &e)
+            catch (std::invalid_argument &e)//if the input is not a number
             {
                 std::cout<< "Invalid input. you have entered a number that does not match the options" << std::endl;
             }
@@ -161,16 +161,16 @@ void displayMenu()
               << "Select your option (1-9): " << std::endl;
 }
 
-bool readStockData(string fileName, char delim)
+bool readStockData(string fileName, char delim)//this reads and checks if the stock data is formatted correctly
 {
-    bool validData = true;
+    bool validData = true;//assume the data is valid
 
-    std::ifstream file(fileName);
+    std::ifstream file(fileName);//open the file
     std::string line;
 
     std::set<string> idSet;
 
-    while (std::getline(file, line))
+    while (std::getline(file, line))//checks every line of the file
     {
         std::stringstream linestream(line);
         std::string id, name, description, dollarsString, centsString, on_handString;
@@ -199,25 +199,25 @@ bool readStockData(string fileName, char delim)
                     validData = false;
                 }
             }
-            catch (const std::invalid_argument &e)
+            catch (const std::invalid_argument &e)//if the string is not a number
             {
                 std::cout << "Invalid Data in Stock File, there isn't a number in the price field" << std::endl;
                 validData = false;
             }
-            catch (const std::out_of_range &e)
+            catch (const std::out_of_range &e)//if the number is too big
             {
                 std::cout << "Invalid Data in Stock File, the price number is too big" << std::endl;
                 validData = false;
             }
 
             // checks all ids are unique:
-            if (idSet.insert(id).second == false)
+            if (idSet.insert(id).second == false)//if the id is already in the set
             {
                 std::cout << "Invalid Data in Stock File, Multiple Entries with the Same ID" << std::endl;
                 validData = false;
             }
             // check length of cent String as it must not be >2 or <2
-            if (centsString.size() != CENTLEN)
+            if (centsString.size() != CENTLEN)//if the cents string is not 2 chars long
             {
                 std::cout << "Invalid Price Data in Stock File: Cents Must be specified to Exactly 2 Decimal Places" << std::endl;
                 validData = false;
@@ -231,7 +231,7 @@ bool readStockData(string fileName, char delim)
         }
         else
         {
-            std::cout << "Invalid Data in Stock File, check the dilemeters you are using" << std::endl;
+            std::cout << "Invalid Data in Stock File, check the dilemeters you are using" << std::endl;//if there are not enough dilemeters
             validData = false;
         }
     }
@@ -239,7 +239,7 @@ bool readStockData(string fileName, char delim)
     return validData;
 }
 
-bool readCoinData(string fileName, char delim)
+bool readCoinData(string fileName, char delim)//this reads and checks if the coin data is formatted correctly
 {
     bool validData = true;
 
@@ -271,12 +271,12 @@ bool readCoinData(string fileName, char delim)
                     std::cout << "Invalid Data in Coin File, you have two of the same denominations being entered" << std::endl;
                 }
             }
-            catch (const std::invalid_argument &e)
+            catch (const std::invalid_argument &e)//if the string is not a number
             {
                 std::cout << "Invalid Data in Coin File, there is not a number in some of the data" << std::endl;
                 validData = false;
             }
-            catch (const std::out_of_range &e)
+            catch (const std::out_of_range &e)//if the number is too big
             {
                 std::cout << "Invalid Data in Coin File, the number in the coins file is too big" << std::endl;
                 validData = false;
@@ -302,7 +302,7 @@ bool readCoinData(string fileName, char delim)
     return validData;
 }
 
-vector<Stock> loadStockData(string fileName, char delim)
+vector<Stock> loadStockData(string fileName, char delim)//this loads the stock data into a vector
 {
     vector<Stock> stocks;
     std::ifstream file(fileName);
@@ -312,7 +312,7 @@ vector<Stock> loadStockData(string fileName, char delim)
     unsigned int dollars;
     unsigned int cents;
 
-    while (std::getline(file, line))
+    while (std::getline(file, line))//while there is a line to read we load the like as a stock object into the vector
     {
         std::stringstream linestream(line);
         Stock stock;
@@ -344,7 +344,7 @@ vector<Stock> loadStockData(string fileName, char delim)
     return stocks;
 }
 
-vector<Coin> loadCoinData(string fileName, char delim)
+vector<Coin> loadCoinData(string fileName, char delim)//this loads the coin data into a vector
 {
     vector<Coin> coins;
     std::ifstream file(fileName);
@@ -352,7 +352,7 @@ vector<Coin> loadCoinData(string fileName, char delim)
     std::vector<int> expectedValues = {5, 10, 20, 50, 100, 200, 500, 1000};
     int denomIndex = 0;
 
-    while (std::getline(file, line))
+    while (std::getline(file, line))//while there is a line to read we load the like as a coin object into the vector
     {
         std::stringstream linestream(line);
         std::string denomString, countString;
