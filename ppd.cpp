@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 
                 bool colour = false;
 
-                std::cout<< "Would you like to enable colour? press 'y' for yes (if anything else is entered it is disabled): " << std::endl;
+                std::cout<< "Would you like to enable colour? press 'y' for yes (if anything else is entered it is disabled): ";
                 if(readInput() == "y")
                 {
                     colour = true;
