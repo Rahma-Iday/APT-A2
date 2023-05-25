@@ -6,6 +6,7 @@ Node::Node(Stock info)
 {
     data = std::make_shared<Stock>(info);
     next = nullptr;
+    prev = nullptr;
 };
 Node::~Node(){
     // TODO

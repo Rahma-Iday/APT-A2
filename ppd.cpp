@@ -1,5 +1,6 @@
 #include <iostream>
 #include "LinkedList.h"
+#include "DoublyLinkedList.h"
 #include <fstream>
 #include <sstream>
 #include <set>
@@ -31,7 +32,7 @@ void getNewItem(LinkedList &list);
 bool getPrice(unsigned int &x, unsigned int &y);
 void printDebug();
 void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, vector<Coin> &coins);
-void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFilePath, string coinFilePath, vector<Coin> &coins);
+void menu(LinkedList &list, bool &exitProgram, int &optionNo, string stockFilePath, string coinFilePath, vector<Coin> &coins);
 void removeItem(LinkedList &list);
 void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFilePath, string coinFilePath);
 void displayCoins(std::vector<Coin> &coins);
@@ -40,7 +41,145 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list);
 bool enoughChange(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins);
 void processMoney(double changeRequired, vector<Coin> &coins, vector<Coin> &userCoins);
 void printAllCoins(vector<Coin> &coins);
+bool readListStructure();
 std::string findFilePath(const std::string& fileName, const std::string& currentDir = ".");
+
+
+/*Command Design Pattern Enhancement*/
+class Command {
+public:
+  virtual ~Command() {}
+  virtual void execute() = 0;
+};
+
+// Concrete command class for displaying items 
+class DisplayItemsCommand : public Command {
+private:
+  LinkedList& list;
+
+public:
+  DisplayItemsCommand(LinkedList& list) : list(list) {}
+
+  void execute() override {
+    list.print();
+  }
+};
+
+// Concrete command class for purchasing Item 
+class PurchaseItemCommand : public Command {
+private:
+  vector<Coin>& coins;
+  LinkedList& list;
+
+public:
+  PurchaseItemCommand(vector<Coin>& coins, LinkedList& list): coins(coins), list(list) {}
+
+  void execute() override {
+    makePurchase(coins, list);
+  }
+};
+
+
+// Concrete command class for saving and exiting
+class SaveAndExitCommand : public Command {
+private:
+  LinkedList& list;
+  std::string stockFilePath;
+  std::string coinFilePath;
+  std::vector<Coin>& coins;
+  bool& exitProgram;
+
+public:
+  SaveAndExitCommand(LinkedList& list, std::string stockFilePath, std::string coinFilePath, std::vector<Coin>& coins, bool& exitProgram)
+      : list(list), stockFilePath(stockFilePath), coinFilePath(coinFilePath), coins(coins), exitProgram(exitProgram) {}
+
+  void execute() override {
+    saveAndExit(list, coins, stockFilePath, coinFilePath);
+    exitProgram = true;
+  }
+};
+
+// Concrete command class for adding an item
+class AddItemCommand : public Command {
+private:
+  LinkedList& list;
+
+public:
+  AddItemCommand(LinkedList& list) : list(list) {}
+
+  void execute() override {
+    getNewItem(list);
+  }
+};
+
+// Concrete command class for removing an item
+class RemoveItemCommand : public Command {
+private:
+  LinkedList& list;
+
+public:
+  RemoveItemCommand(LinkedList& list) : list(list) {}
+
+  void execute() override {
+    removeItem(list);
+  }
+};
+
+// Concrete command class for displaying coins
+class DisplayCoinsCommand : public Command {
+private:
+  std::vector<Coin>& coins;
+
+public:
+  DisplayCoinsCommand(std::vector<Coin>& coins) : coins(coins) {}
+
+  void execute() override {
+    displayCoins(coins);
+  }
+};
+
+// Concrete command class for resetting stock
+class ResetStockCommand : public Command {
+private:
+  LinkedList& list;
+
+public:
+  ResetStockCommand(LinkedList& list) : list(list) {}
+
+  void execute() override {
+    list.resetStock();
+    std::cout << "\"All stock has been reset to " << DEFAULT_STOCK_LEVEL << "\"" << std::endl;
+  }
+};
+
+// Concrete command class for resetting coins
+class ResetCoinsCommand : public Command {
+private:
+  std::vector<Coin>& coins;
+
+public:
+  ResetCoinsCommand(std::vector<Coin>& coins) : coins(coins) {}
+
+  void execute() override {
+    resetCoins(coins);
+  }
+};
+
+// Concrete command class for aborting the program (option 9)
+class AbortProgramCommand : public Command {
+private:
+  bool& exitProgram;
+
+public:
+  AbortProgramCommand(bool& exitProgram) : exitProgram(exitProgram) {}
+
+  void execute() override {
+    exitProgram = true;
+  }
+};
+
+
+// Implement the other concrete command classes for the remaining options.
 
 /**
  * manages the running of the program, initialises data structures, loads
@@ -69,15 +208,33 @@ int main(int argc, char **argv)
                 vector<Stock> stock = loadStockData(stockFilePath, STOCK_DELIM);
                 vector<Coin> coins = loadCoinData(coinFilePath, DELIM[0]);
 
-                // put stock vector's stocks into linked list
-                LinkedList list;
-                for (int i = 0; i < static_cast<int>(stock.size()); i++)
+                // asks user what type of structure they would like to use
+                bool listType = readListStructure();
+                if (listType)
                 {
-                    list.add(stock[i]);
-                }
-                /*load coin into array data type?*/
+                    std::cout << "Using Doubly Linked List for Stock" << std::endl;
+                    DoublyLinkedList list;
+                    for (int i = 0; i < static_cast<int>(stock.size()); i++)
+                    {
+                        list.add(stock[i]);
+                    }
 
-                handleInput(list, stockFilePath, coinFilePath, coins);
+                    handleInput(list, stockFilePath, coinFilePath, coins);
+                }
+                else 
+                {
+                    // put stock vector's stocks into linked list
+                    std::cout << "Using Linked List for Stock" << std::endl;
+                    LinkedList list;
+                    for (int i = 0; i < static_cast<int>(stock.size()); i++)
+                    {
+                        list.add(stock[i]);
+                    }
+
+                    handleInput(list, stockFilePath, coinFilePath, coins);
+
+                }
+                
             }
         } 
         else 
@@ -89,9 +246,11 @@ int main(int argc, char **argv)
     {
         std::cout << "Please make sure exactly 3 command line arguments are entered in the form:\n ./ppd <stockfile> <coinsfile>" << std::endl;
     }
+
     return EXIT_SUCCESS;
 }
 
+/* asks for user input after displaying main menu*/
 void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, vector<Coin> &coins)
 {
 
@@ -128,65 +287,101 @@ void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, ve
                     printInvalidInput();
                 }
             }
-            // request to sarvesh: can i remove this now YOU HATER
-            else if (input == "")
-            {
-                displayMenu();
-            }
             else
             {
                 printInvalidInput();
             }
         }
+
         std::cout << std::endl;
-        handleOptions(list, exitProgram, optionNo, stockFilePath, coinFilePath, coins);
+        /* after a valid option 1-9 is gotten from user a command is created and executed based on this */
+        menu(list, exitProgram, optionNo, stockFilePath, coinFilePath, coins);
         std::cout << std::endl;
     }
 }
 
-void handleOptions(LinkedList &list, bool &exitProgram, int &optionNo, string stockFilePath, string coinFilePath, vector<Coin> &coins)
+/*this function creates and executes commands of the main menu based on the command design pattern*/
+void menu(LinkedList &list, bool &exitProgram, int &optionNo, string stockFilePath, string coinFilePath, vector<Coin> &coins)
 {
-    if (optionNo == 1)
+    /*create command based on optionNo*/
+    Command* command = nullptr;
+
+    if (optionNo == 1) 
     {
-        // Display items
-        list.print();
-        // no exiting program, thus re-displays main menu
+        command = new DisplayItemsCommand(list);
+    } 
+    else if (optionNo == 2) 
+    {
+        command = new PurchaseItemCommand(coins, list);
+    } 
+    else if (optionNo == 3) 
+    {
+      command = new SaveAndExitCommand(list, stockFilePath, coinFilePath, coins, exitProgram);
+    } 
+    else if (optionNo == 4) 
+    {
+      command = new AddItemCommand(list);
+    } 
+    else if (optionNo == 5) 
+    {
+      command = new RemoveItemCommand(list);
+    } 
+    else if (optionNo == 6) 
+    {
+      command = new DisplayCoinsCommand(coins);
+    } 
+    else if (optionNo == 7) 
+    {
+      command = new ResetStockCommand(list);
+    } 
+    else if (optionNo == 8) 
+    {
+      command = new ResetCoinsCommand(coins);
+    } 
+    else if (optionNo == 9) {
+        command = new AbortProgramCommand(exitProgram);
     }
-    else if (optionNo == 2)
-    { // Purchase Item
-        makePurchase(coins, list);
-    }
-    else if (optionNo == 3)
-    { // Save and Exit
-        saveAndExit(list, coins, stockFilePath, coinFilePath);
-        exitProgram = true; // only if method returns true tho
-    }
-    else if (optionNo == 4)
-    { // Add item
-        getNewItem(list);
-    }
-    else if (optionNo == 5)
-    { // Remove Item
-        removeItem(list);
-    }
-    else if (optionNo == 6)
-    { // Display Coins
-        displayCoins(coins);
-    }
-    else if (optionNo == 7)
-    { // Reset Stock
-        list.resetStock();
-        std::cout << "\"All stock has been reset to " << DEFAULT_STOCK_LEVEL << "\"" << std::endl;
-    }
-    else if (optionNo == 8)
-    { // Reset Coins
-        resetCoins(coins);
-    }
-    else if (optionNo == 9)
-    { // Abort the Program
-        exitProgram = true;
-    }
+
+    // Execute the command that was created
+    command->execute();
+
+    delete command;
 }
+
+/* returns True for DoublyLinked List and False for Linked List*/
+bool readListStructure()
+{
+    bool choice =  false;
+    bool validOption = false;
+
+    while (!validOption)
+    {
+        std::cout << "Which Datastructure would you like to load Stock into: " << std::endl;
+        std::cout << "1) Linked List" << std::endl;
+        std::cout << "2) Doubly-Linked List" << std::endl;
+
+        string input = readInput();
+
+        if (std::cin.eof())
+        {
+            std::cout << "\nCtrl-D was pressed, terminating program." << std::endl;
+            validOption = true;
+        }
+        else if (input == "1")
+        {
+            choice = false;
+            validOption = true;
+        }
+        else if (input == "2")
+        {
+            choice = true;
+            validOption = true;
+        }
+    }
+
+    return choice;
+}
+
 
 void saveAndExit(LinkedList &list, std::vector<Coin> &coins, string stockFilePath, string coinFilePath)
 {
