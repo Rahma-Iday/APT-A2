@@ -195,6 +195,7 @@ int main(int argc, char **argv)
         string stockFile(argv[1]);
         std::string coinFile(argv[2]);
 
+        /*returns filePath from given file Names (to account for different directories)*/
         string stockFilePath = findFilePath(stockFile);
         string coinFilePath = findFilePath(coinFile);
 
@@ -284,12 +285,17 @@ void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, ve
                 }
                 else
                 {
-                    printInvalidInput();
+                    std::cout << "The number you entered is not within the options 1-9" << std::endl;
                 }
+            }
+            else if (input == "help")
+            {
+                std::cout << "Help: You should enter a number between 1-9 to select an option" << std::endl;
+
             }
             else
             {
-                printInvalidInput();
+                std::cout << "Please enter an number between 1-9 to select an option" << std::endl;
             }
         }
 
@@ -342,10 +348,11 @@ void menu(LinkedList &list, bool &exitProgram, int &optionNo, string stockFilePa
         command = new AbortProgramCommand(exitProgram);
     }
 
-    // Execute the command that was created
-    command->execute();
-
-    delete command;
+    // Execute the command that was created (if created, otherwise could lead to memory issues)
+    if (command != nullptr) {
+      command->execute();
+      delete command;
+    }
 }
 
 /* returns True for DoublyLinked List and False for Linked List*/
@@ -357,8 +364,9 @@ bool readListStructure()
     while (!validOption)
     {
         std::cout << "Which Datastructure would you like to load Stock into: " << std::endl;
-        std::cout << "1) Linked List" << std::endl;
-        std::cout << "2) Doubly-Linked List" << std::endl;
+        std::cout << "\t1) Linked List" << std::endl;
+        std::cout << "\t2) Doubly-Linked List" << std::endl;
+        std::cout << "Enter the number of choice: ";
 
         string input = readInput();
 
@@ -376,6 +384,14 @@ bool readListStructure()
         {
             choice = true;
             validOption = true;
+        }
+        else if (input == "help")
+        {
+            std::cout << "Help: Enter 1 or 2 to select an option" << std::endl;
+        }
+        else
+        {
+            std::cout << "Enter 1 or 2 to select an option" << std::endl;
         }
     }
 
@@ -443,7 +459,7 @@ bool readStockData(string fileName, char delim)
         std::stringstream linestream(line);
         std::string id, name, description, dollarsString, centsString, on_handString;
 
-        unsigned int cents;
+        int cents, dollars, onHand;
 
         // checks all feilds are there, if all there then checks if string feilds are actually unsigned ints
         if (
@@ -457,24 +473,34 @@ bool readStockData(string fileName, char delim)
             // checks that all strings for dollars, cents and stock on hand strings are all unsigned ints
             try
             {
-                std::stoul(dollarsString);
-                std::stoul(on_handString);
+                dollars = std::stoul(dollarsString);
+                onHand = std::stoul(on_handString);
                 cents = std::stoul(centsString);
                 // additonally also checks that cents is divisible by 5 EVENLY
                 if (cents % 5 != 0)
                 {
-                    std::cout << "Invalid Price Data in Stock File: Cents Must be Valid" << std::endl;
+                    std::cout << "Invalid Price Data in Stock File: Cents Must be Valid (end in 0 or 5)" << std::endl;
+                    validData = false;
+                }
+                if (dollars < 0 || cents < 0)
+                {
+                    std::cout << "Invalid Price Data in Stock File: Price Must be Positive" << std::endl;
+                    validData = false;
+                }
+                if (onHand < 0)
+                {
+                    std::cout << "Invalid Price Data in Stock File: Stock on Hand Must be Positive" << std::endl;
                     validData = false;
                 }
             }
             catch (const std::invalid_argument &e)
             {
-                std::cout << "Invalid Data in Stock File" << std::endl;
+                std::cout << "Invalid Data in Stock File: Check that the Price and Stock on hand feilds are numerical" << std::endl;
                 validData = false;
             }
             catch (const std::out_of_range &e)
             {
-                std::cout << "Invalid Data in Stock File" << std::endl;
+                std::cout << "Invalid Data in Stock File: Check that the Price and Stock on hand feilds are positive numerics" << std::endl;
                 validData = false;
             }
 
@@ -491,15 +517,25 @@ bool readStockData(string fileName, char delim)
                 validData = false;
             }
             // checks that ID len , name len and Description len are the correct size:
-            if (static_cast<int>(id.size()) != IDLEN || static_cast<int>(name.length()) > NAMELEN || static_cast<int>(description.length()) > DESCLEN)
+            if (static_cast<int>(id.size()) != IDLEN )
             {
-                std::cout << "Invalid Price Data in Stock File: Check ID, name and description feilds are the correct size" << std::endl;
+                std::cout << "Invalid Price Data in Stock File: Check ID is exactly "<< IDLEN << " characters long" << std::endl;
+                validData = false;
+            }
+            if (static_cast<int>(name.length()) > NAMELEN )
+            {
+                std::cout << "Invalid Price Data in Stock File: Check that stock name is under "<< NAMELEN << " characters" << std::endl;
+                validData = false;
+            }
+            if (static_cast<int>(description.length()) > DESCLEN )
+            {
+                std::cout << "Invalid Price Data in Stock File: Check that stock name is under "<< DESCLEN << " characters" << std::endl;
                 validData = false;
             }
         }
         else
         {
-            std::cout << "Invalid Data in Stock File" << std::endl;
+            std::cout << "Incomplete Data in Stock File: Not all feilds of the Stock are present" << std::endl;
             validData = false;
         }
     }
@@ -507,6 +543,7 @@ bool readStockData(string fileName, char delim)
     return validData;
 }
 
+/* validates coin data by reading file */
 bool readCoinData(string fileName, char delim)
 {
     bool validData = true;
@@ -520,9 +557,9 @@ bool readCoinData(string fileName, char delim)
     {
         std::stringstream linestream(line);
         std::string denominationString, quantityString;
-        unsigned int denomination;
+        int denomination, quantity;
 
-        // checks all feilds are there, if all there then checks if string feilds are actually unsigned ints
+        // checks all feilds are present, if all exist then checks if string feilds are actually unsigned ints
         if (
             std::getline(linestream, denominationString, delim) &&
             std::getline(linestream, quantityString))
@@ -531,29 +568,41 @@ bool readCoinData(string fileName, char delim)
             try
             {
                 denomination = std::stoul(denominationString);
-                std::stoul(quantityString);
+                quantity = std::stoul(quantityString);
 
                 // checks if duplicate value is being inserted
                 if (denomSet.insert(denomination).second == false)
                 {
-                    std::cout << "Invalid Data in Coin File" << std::endl;
+                    std::cout << "Duplicate Denominations in Coin File" << std::endl;
+                    validData = false;
                 }
+                if (quantity < 0 )
+                {
+                    std::cout << "Invalid Data in Coin File: Entry in Quantity feild is negative" << std::endl;
+                    validData = false;
+                }
+                if (denomination < 0 )
+                {
+                    std::cout << "Invalid Data in Coin File: Denomination in Quantity feild is negative" << std::endl;
+                    validData = false;
+                }
+
             }
             catch (const std::invalid_argument &e)
             {
-                std::cout << "Invalid Data in Coin File" << std::endl;
+                std::cout << "Invalid Data in Coin File: check denominations and quantity are numerics" << std::endl;
                 validData = false;
             }
             catch (const std::out_of_range &e)
             {
-                std::cout << "Invalid Data in Coin File" << std::endl;
+                std::cout << "Invalid Data in Coin File: check denominations and quantity are positive numerics" << std::endl;
                 validData = false;
             }
         }
         else
         {
             // invalid number of feilds
-            std::cout << "Invalid Data in Coin File" << std::endl;
+            std::cout << "Invalid Data in Coin File: too many or too little feilds specified for a coin" << std::endl;
             validData = false;
         }
     }
@@ -563,7 +612,8 @@ bool readCoinData(string fileName, char delim)
     std::set<int> expectedSet = {5, 10, 20, 50, 100, 200, 500, 1000};
     if (denomSet != expectedSet)
     {
-        std::cout << "Invalid Data in Coin File" << std::endl;
+        std::cout << "Invalid Data in Coin File: The denominations entered to not match the set: " << std::endl;
+        std::cout << "\t[5, 10, 20, 50, 100, 200, 500, 1000]" << std::endl;
         validData = false;
     }
 
@@ -748,12 +798,15 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
             std::cout << "Please come again." << std::endl;
             invalidItem = false;
         }
+        else if (itemToPurchase == "help"){
+            std::cout << "Help: Enter the ID of the item you wish to purchase." << std::endl;
+            std::cout << "If unsure of ID, go back by pressing enter and select option 1 to display available items and check their IDs" << std::endl;
+        }
         else if (list.getName(itemToPurchase) == "Not Found")
         {
             std::cout << "The item id you entered could not be found\n"
                       << std::endl;
         }
-
         else
         {
             // if there is no stock
@@ -828,6 +881,14 @@ void makePurchase(vector<Coin> &coinVect, LinkedList &list)
                         std::cout << "Change of mind - here is your change: ";
                         printAllCoins(userCoins);
                         // delete user coins
+                    }
+                    else if (currentCoin == "help")
+                    {
+                        std::cout << "Help: Enter the coin or not you are giving in cents." << std::endl;
+                        std::cout << "Example: If you are giving a $5 note you must enter 500." << std::endl;
+                        std::cout << "Be careful: You must only put valid coins or notes $3 is not a valid coin." << std::endl;
+                        std::cout << "To give $3 you must first give $2 coin (200) and then give $1 coin (100)" << std::endl;
+
                     }
                     else
                     {
@@ -1025,8 +1086,7 @@ bool isNumber(string s)
 /*prints Invalid input*/
 void printInvalidInput()
 {
-    std::cout << "Invalid input.\n"
-              << std::endl;
+    std::cout << "Invalid input.\n" << std::endl;
 }
 
 std::string generateId(const std::vector<std::string> &idList)
@@ -1095,6 +1155,21 @@ void getNewItem(LinkedList &list)
             {
                 std::cout << "Item not added. Returning to main menu." << std::endl;
                 itemAdded = true;
+            }
+            else if (input == "help")
+            {
+                if (name == "")
+                {
+                    std::cout << "Help: enter the name of the stock you want to add e.g. Lemon Pie" << std::endl;
+                }
+                else if (description == "")
+                {
+                    std::cout << "Help: enter the description of the item e.g. tasty lemon pie with coconut shavings" << std::endl;
+                }
+                else
+                {
+                    std::cout << "Help: enter the price of the item e.g. 5.75" << std::endl;
+                }
             }
             else if (name == "")
             {
@@ -1179,6 +1254,10 @@ bool getPrice(unsigned int &x, unsigned int &y)
             interupt = true;
             gotPrice = true;
         }
+        else if (inputStr == "help")
+        {
+            std::cout << "Help: enter the price of the item e.g. 5.75" << std::endl;
+        }
         else
         {
             std::cerr << "Invalid input. Please enter a number with exactly two digits after the decimal point:";
@@ -1191,18 +1270,27 @@ void removeItem(LinkedList &list)
 {
     std::cout << "Enter the item id of the item to remove from the menu: ";
     std::string id = readInput();
-    std::string name = list.getName(id);
-    std::string description = list.getDescription(id);
+    if (id == "help")
+    {
+        std::cout << "Help: Enter the ID of the item you wish to remove." << std::endl;
+        std::cout << "As you are unsure, please select option 1 to display available items first and find the ID from there" << std::endl;
+    }
+    else 
+    {
+        std::string name = list.getName(id);
+        std::string description = list.getDescription(id);
 
-    if (name != "Not Found")
-    {
-        std::cout << "\"" << id << " - " << name << " - " << description << "\" has been removed from the system." << std::endl;
-        list.remove(id);
+        if (name != "Not Found")
+        {
+            std::cout << "\"" << id << " - " << name << " - " << description << "\" has been removed from the system." << std::endl;
+            list.remove(id);
+        }
+        else
+        {
+            std::cout << "Item not found." << std::endl;
+        }
     }
-    else
-    {
-        std::cout << "Item not found." << std::endl;
-    }
+    
 }
 
 void displayCoins(std::vector<Coin> &coins)
