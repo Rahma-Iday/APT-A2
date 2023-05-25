@@ -10,6 +10,11 @@ LinkedList::LinkedList()
     listLength = 0;
 }
 
+LinkedList::~LinkedList()
+{
+    deleteList();
+}
+
 void LinkedList::add(Stock info)
 {
     std::shared_ptr<Node> newNode = std::make_shared<Node>(info);
@@ -205,12 +210,16 @@ void LinkedList::buy(std::string id)
 
 void LinkedList::deleteList()
 {
+    std::shared_ptr<Node> current = head;
+    while (current != nullptr)
+    {
+        std::shared_ptr<Node> next = current->next;
+        current->next = nullptr;
+        current->prev = nullptr;
+        current = next;
+    }
+    head = nullptr;
     listLength = 0;
-}
-
-LinkedList::~LinkedList()
-{
-    deleteList();
 }
 
 void LinkedList::printIdList()
