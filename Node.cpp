@@ -9,7 +9,7 @@ Node::Node(Stock info)
     prev = nullptr;
 };
 Node::~Node(){
-    // TODO
+    data = nullptr;
 };
 void Price::print()
 {
