@@ -7,7 +7,8 @@ bool readCoinData(string fileName, char delim);//read coin data from file
 vector<Stock> loadStockData(string fileName, char delim);//load stock data from file
 vector<Coin> loadCoinData(string fileName, char delim);//load coin data from file
 void displayMenu();//display the main menu
-void handleInput(LinkedList &list, string stockFilePath, string coinFilePath, vector<Coin> &coins, bool &colour);//handle the input from the user
+void handleInput(LinkedList &list, string stockFilePath, 
+                string coinFilePath, vector<Coin> &coins, bool &colour);//handle the input from the user
 std::string findFilePath(const std::string& fileName, const std::string& currentDir = ".");//find the file path of the given file name
 
 /**
@@ -189,8 +190,11 @@ bool readStockData(string fileName, char delim)//this reads and checks if the st
             // checks that all strings for dollars, cents and stock on hand strings are all unsigned ints
             try
             {
-                std::stoul(dollarsString);
-                std::stoul(on_handString);
+                if(std::stol(dollarsString) < 0){
+                    throw std::out_of_range("Price is negative in the stock file");
+                    validData = false;
+                }
+                std::stoi(on_handString);
                 cents = std::stoul(centsString);
                 // additonally also checks that cents is divisible by 5 EVENLY
                 if (cents % 5 != 0)
@@ -206,7 +210,7 @@ bool readStockData(string fileName, char delim)//this reads and checks if the st
             }
             catch (const std::out_of_range &e)//if the number is too big
             {
-                std::cout << "Invalid Data in Stock File, the price number is too big" << std::endl;
+                std::cout << "Invalid Data in Stock File, the price number is too big or is a negative" << std::endl;
                 validData = false;
             }
 
