@@ -206,6 +206,13 @@ void LinkedList::buy(std::string id)
 
 void LinkedList::deleteList()
 {
+    std::shared_ptr<Node> curr = head;
+    while(curr != nullptr){
+        std::shared_ptr<Node> next = curr->next;
+        curr->next = nullptr;
+        curr->prev = nullptr;
+        curr = next;
+    }
     listLength = 0;
 }
 
